@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dual Affine Spiral Orbits on ℤ² from Paired Unit Squares – Chuck Wrathall</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
+        body { 
+            font-family: 'EB Garamond', serif; 
+            line-height: 1.75; 
+            font-size: 1.1rem; 
+        }
+        h1, h2, h3 { 
+            font-family: 'Inter', system-ui, sans-serif; 
+        }
+        .paper { 
+            max-width: 820px; 
+            margin: 40px auto; 
+            padding: 40px 30px; 
+            background: white; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12); 
+        }
+        .abstract { 
+            font-style: italic; 
+            text-align: justify; 
+            margin: 2rem 0; 
+            padding: 1.8rem; 
+            border: 1px solid #ddd; 
+            background: #f9f9f9; 
+        }
+        .equation { 
+            margin: 1.8rem 0; 
+            text-align: center; 
+        }
+        .download-btn {
+            display: inline-block;
+            background-color: #1f2937;
+            color: white;
+            font-weight: 500;
+            padding: 14px 32px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        .download-btn:hover {
+            background-color: #111827;
+        }
+    </style>
+</head>
+<body class="bg-stone-100 py-12">
+    <div class="paper">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-semibold tracking-tight">Dual Affine Spiral Orbits on ℤ² from Paired Unit Squares</h1>
+            <p class="text-2xl mt-6">Chuck Wrathall</p>
+            <p class="text-lg text-stone-600">Independent Researcher</p>
+        </div>
+
+        <div class="abstract">
+            <strong>Abstract</strong><br><br>
+            We introduce a simple iterative geometric construction on the integer lattice ℤ² consisting of paired unit squares that share a single corner. At each step, a new square is constructed outwardly on the hypotenuse of the isosceles right triangle formed by the outer edges adjacent to the shared corner. This process generates two interlocking affine spiral orbits on ℤ²: a positive orbit {P_n} starting at (0, 0) and a negative orbit {N_n} starting at (−1, 2).
+            <br><br>
+            Both sequences satisfy linear recurrences driven by multiplication by the Gaussian integer 1 + i. We prove that the paired points remain symmetric with respect to the fixed midpoint M = (−1/2, 1) for all n, satisfying the invariant P_n + N_n = (−1, 2). Extending the iteration backward under the associated inverse maps produces the attractor of the well-known Twindragon fractal. In addition, the paired points yield the normalized quadratic sequence
+            <div class="equation">a(n) = (|P_n|² + |N_n|²)/5 = 2^{n+1} + 1 − 2 Re((1 + i)^n)</div>
+            which is always an integer and appears as A396151 in the OEIS.
+        </div>
+
+        <div class="text-center mt-12">
+            <a href="paper.pdf" class="download-btn">
+                Download the Full 8-page PDF (with Appendix A)
+            </a>
+        </div>
+
+        <p class="text-center text-stone-500 mt-16 text-sm">
+            Full web version with all equations, figures, and Appendix A
+        </p>
+    </div>
+
+    <script>
+        MathJax = { 
+            tex: { 
+                inlineMath: [['$', '$'], ['\\(', '\\)']] 
+            } 
+        };
+    </script>
+</body>
+</html>
