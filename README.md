@@ -24,10 +24,9 @@ which is always an integer and appears as A396151 in the OEIS.
 
 ### View the Full Paper
 
-- Beautiful web version → [Open the Full Paper](https://chuckwrathall.github.io/dual-affine-spiral-orbits/)  
-  (clean academic layout with all equations, figures, and the new Appendix A)
+- Web version → [Open the Full Paper](https://chuckwrathall.github.io/dual-affine-spiral-orbits/)  
 
-- Download the finished PDF → [paper.pdf](paper.pdf)
+- Download the PDF → [paper.pdf](paper.pdf)
 
 ---
 
