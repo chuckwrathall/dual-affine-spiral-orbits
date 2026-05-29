@@ -6,7 +6,7 @@
     <title>Dual Affine Spiral Orbits on ℤ² from Paired Unit Squares – Chuck Wrathall</title>
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- MathJax Configuration (must come BEFORE the script) -->
+    <!-- MathJax Configuration -->
     <script>
         window.MathJax = {
             tex: {
@@ -18,19 +18,21 @@
             }
         };
     </script>
-    
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         
         body { 
-            font-family: 'EB Garamond', serif; 
+            font-family: 'Inter', system-ui, sans-serif; 
             line-height: 1.75; 
             font-size: 1.1rem; 
+            font-weight: 400;
         }
+        
         h1, h2, h3 { 
             font-family: 'Inter', system-ui, sans-serif; 
+            font-weight: 600;
         }
         
         .paper { 
@@ -78,6 +80,11 @@
         @media (max-width: 640px) {
             .equation { font-size: 0.97rem; }
         }
+        
+        /* Make paragraph text lighter */
+        p, .abstract {
+            font-weight: 400;
+        }
     </style>
 </head>
 <body class="bg-stone-100 py-12">
@@ -124,7 +131,6 @@
     </div>
 
     <script>
-        // Force typesetting after load
         window.addEventListener('load', () => {
             if (typeof MathJax !== "undefined") {
                 MathJax.typesetPromise().catch(err => console.error(err));
