@@ -6,6 +6,7 @@
     <title>Dual Affine Spiral Orbits on ℤ² from Paired Unit Squares – Chuck Wrathall</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
         
@@ -53,11 +54,12 @@
         }
         
         .equation {
-            margin: 1.2rem 0;
-            padding: 1rem;
+            margin: 1.4rem 0;
+            padding: 1.1rem;
             background: #f0f0f0;
             border-left: 4px solid #444;
-            font-size: 1.05rem;
+            font-size: 1.08rem;
+            overflow-x: auto;
         }
     </style>
 </head>
@@ -105,11 +107,20 @@
         </div>
     </div>
 
+    <!-- Improved MathJax configuration -->
     <script>
-        MathJax = { 
-            tex: { 
-                inlineMath: [['$', '$'], ['\\(', '\\)']] 
-            } 
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            startup: {
+                ready: () => {
+                    MathJax.startup.defaultReady();
+                    MathJax.typesetClear();
+                    MathJax.typesetPromise().catch(err => console.error(err));
+                }
+            }
         };
     </script>
 </body>
