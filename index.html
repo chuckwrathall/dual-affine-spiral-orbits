@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dual Affine Spiral Orbits on ℤ² from Paired Unit Squares – Chuck Wrathall</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+    <!-- MathJax loaded without async for better reliability -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
@@ -53,21 +54,16 @@
             line-height: 1.85;
         }
         
-        /* Clean centered equation with mobile overflow fix */
         .equation {
-            margin: 1.6rem 0;
+            margin: 1.8rem 0;
             text-align: center;
             font-size: 1.05rem;
             overflow-x: auto;
-            overflow-y: hidden;
-            padding: 0.5rem 0;
+            padding: 0.4rem 0;
         }
         
-        /* Smaller math on narrow screens */
         @media (max-width: 640px) {
-            .equation {
-                font-size: 0.95rem;
-            }
+            .equation { font-size: 0.98rem; }
         }
     </style>
 </head>
@@ -83,7 +79,6 @@
             <p class="text-lg text-stone-600">May 24, 2026</p>
         </div>
 
-        <!-- Square Animation Video -->
         <div class="video-container">
             <video controls autoplay muted loop playsinline>
                 <source src="construction-animation.mp4" type="video/mp4">
@@ -99,4 +94,14 @@
             
             <br><br>
             
-            Both sequences satisfy linear recurrences driven by multiplication by the Gaussian integer \(1 + i\). We prove that the paired points remain symmetric with respect to the fixed midpoint \(M = (-1/2, 1)\) for all \(n\), satisfying
+            Both sequences satisfy linear recurrences driven by multiplication by the Gaussian integer \(1 + i\). We prove that the paired points remain symmetric with respect to the fixed midpoint \(M = (-1/2, 1)\) for all \(n\), satisfying the invariant \(P_n + N_n = (-1, 2)\). Extending the iteration backward under the associated inverse maps produces the attractor of the well-known Twindragon fractal. In addition, the paired points yield the normalized quadratic sequence
+            
+            <div class="equation">
+                \( a(n) = \dfrac{|P_n|^2 + |N_n|^2}{5} = 2^{n+1} + 1 - 2 \operatorname{Re}((1 + i)^n) \)
+            </div>
+            
+            which is always an integer and appears as A396151 in the OEIS.
+        </div>
+
+        <div class="text-center mt-12">
+            <a href="paper.pdf" class="inline-block bg-stone
