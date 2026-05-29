@@ -5,8 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dual Affine Spiral Orbits on ℤ² from Paired Unit Squares – Chuck Wrathall</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- MathJax loaded without async for better reliability -->
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- MathJax Configuration (must come BEFORE the script) -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [ ['\\(', '\\)'], ['$', '$'] ],
+                displayMath: [ ['\\[', '\\]'], ['$$', '$$'] ]
+            },
+            options: {
+                skipHtmlTags: { '[-]': ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+            }
+        };
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
@@ -59,11 +72,11 @@
             text-align: center;
             font-size: 1.05rem;
             overflow-x: auto;
-            padding: 0.4rem 0;
+            padding: 8px 0;
         }
         
         @media (max-width: 640px) {
-            .equation { font-size: 0.98rem; }
+            .equation { font-size: 0.97rem; }
         }
     </style>
 </head>
@@ -104,4 +117,19 @@
         </div>
 
         <div class="text-center mt-12">
-            <a href="paper.pdf" class="inline-block bg-stone
+            <a href="paper.pdf" class="inline-block bg-stone-800 hover:bg-black text-white font-medium px-10 py-4 rounded-lg text-lg transition">
+                Download the Full 8-page PDF (with Appendix A)
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Force typesetting after load
+        window.addEventListener('load', () => {
+            if (typeof MathJax !== "undefined") {
+                MathJax.typesetPromise().catch(err => console.error(err));
+            }
+        });
+    </script>
+</body>
+</html>
