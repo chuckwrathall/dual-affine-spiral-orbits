@@ -53,11 +53,21 @@
             line-height: 1.85;
         }
         
-        /* Clean equation style - no background or bar */
+        /* Clean centered equation with mobile overflow fix */
         .equation {
             margin: 1.6rem 0;
             text-align: center;
-            font-size: 1.12rem;
+            font-size: 1.05rem;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 0.5rem 0;
+        }
+        
+        /* Smaller math on narrow screens */
+        @media (max-width: 640px) {
+            .equation {
+                font-size: 0.95rem;
+            }
         }
     </style>
 </head>
@@ -89,29 +99,4 @@
             
             <br><br>
             
-            Both sequences satisfy linear recurrences driven by multiplication by the Gaussian integer \(1 + i\). We prove that the paired points remain symmetric with respect to the fixed midpoint \(M = (-1/2, 1)\) for all \(n\), satisfying the invariant \(P_n + N_n = (-1, 2)\). Extending the iteration backward under the associated inverse maps produces the attractor of the well-known Twindragon fractal. In addition, the paired points yield the normalized quadratic sequence
-            
-            <div class="equation">
-                \( a(n) = \dfrac{|P_n|^2 + |N_n|^2}{5} = 2^{n+1} + 1 - 2 \operatorname{Re}((1 + i)^n) \)
-            </div>
-            
-            which is always an integer and appears as A396151 in the OEIS.
-        </div>
-
-        <div class="text-center mt-12">
-            <a href="paper.pdf" class="inline-block bg-stone-800 hover:bg-black text-white font-medium px-10 py-4 rounded-lg text-lg transition">
-                Download the Full 8-page PDF (with Appendix A)
-            </a>
-        </div>
-    </div>
-
-    <script>
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']]
-            },
-            startup: {
-                ready: () => {
-                    MathJax.startup.defaultReady();
-                    Math
+            Both sequences satisfy linear recurrences driven by multiplication by the Gaussian integer \(1 + i\). We prove that the paired points remain symmetric with respect to the fixed midpoint \(M = (-1/2, 1)\) for all \(n\), satisfying
