@@ -54,12 +54,9 @@
         }
         
         .equation {
-            margin: 1.4rem 0;
-            padding: 1.1rem;
-            background: #f0f0f0;
-            border-left: 4px solid #444;
-            font-size: 1.08rem;
-            overflow-x: auto;
+            margin: 1.5rem 0;
+            text-align: center;
+            font-size: 1.1rem;
         }
     </style>
 </head>
@@ -94,7 +91,7 @@
             Both sequences satisfy linear recurrences driven by multiplication by the Gaussian integer \(1 + i\). We prove that the paired points remain symmetric with respect to the fixed midpoint \(M = (-1/2, 1)\) for all \(n\), satisfying the invariant \(P_n + N_n = (-1, 2)\). Extending the iteration backward under the associated inverse maps produces the attractor of the well-known Twindragon fractal. In addition, the paired points yield the normalized quadratic sequence
             
             <div class="equation">
-                \( a(n) = \frac{|P_n|^2 + |N_n|^2}{5} = 2^{n+1} + 1 - 2 \operatorname{Re}((1 + i)^n) \)
+                \( a(n) = \dfrac{|P_n|^2 + |N_n|^2}{5} = 2^{n+1} + 1 - 2 \operatorname{Re}((1 + i)^n) \)
             </div>
             
             which is always an integer and appears as A396151 in the OEIS.
@@ -107,9 +104,9 @@
         </div>
     </div>
 
-    <!-- Improved MathJax configuration -->
+    <!-- MathJax Configuration -->
     <script>
-        MathJax = {
+        window.MathJax = {
             tex: {
                 inlineMath: [['$', '$'], ['\\(', '\\)']],
                 displayMath: [['$$', '$$'], ['\\[', '\\]']]
@@ -117,8 +114,7 @@
             startup: {
                 ready: () => {
                     MathJax.startup.defaultReady();
-                    MathJax.typesetClear();
-                    MathJax.typesetPromise().catch(err => console.error(err));
+                    MathJax.typeset();
                 }
             }
         };
