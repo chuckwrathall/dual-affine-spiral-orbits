@@ -2,7 +2,8 @@
 
 Chuck Wrathall  
 Independent Researcher  
-Sydney, Nova Scotia, Canada
+Sydney, Nova Scotia, Canada  
+[0009-0004-7008-4489](https://orcid.org/0009-0004-7008-4489)
 
 ---
 
@@ -30,19 +31,20 @@ which is always an integer and appears as A396151 in the OEIS.
 
 ---
 
-### What’s New in This Version
-- Full 8-page finished paper
-- New Appendix A: Explicit coordinate tables verifying the Corner Sum Identity (n = 0 to 8 for both orbits)
-
 ### References
 - OEIS A396151: https://oeis.org/A396151
 - C. Davis and D. E. Knuth, “Number representations and dragon curves,” Journal of Recreational Mathematics, 3:66–81 and 133–149, 1970.
 
 ---
 
-Repository Contents
-- index.html – Full web version of the paper
-- paper.pdf – The finished 8-page paper (with Appendix A)
-- figures/ – All figures from the paper
+### How to Cite
 
-Last updated: May 2026
+```bibtex
+@misc{wrathall2026dual,
+  author       = {Chuck Wrathall},
+  title        = {Dual Affine Spiral Orbits on `\(\mathbb{Z}^2\)` from Paired Unit Squares},
+  year         = {2026},
+  howpublished = {Preprint},
+  note         = {OEIS A396151. Available at \url{https://chuckwrathall.github.io/dual-affine-spiral-orbits/}},
+  url          = {https://chuckwrathall.github.io/dual-affine-spiral-orbits/}
+}
