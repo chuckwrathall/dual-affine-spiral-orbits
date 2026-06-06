@@ -2,7 +2,7 @@
 
 Chuck Wrathall  
 Independent Researcher  
-Sydney, Nova Scotia, Canada  
+Nova Scotia, Canada  
 [0009-0004-7008-4489](https://orcid.org/0009-0004-7008-4489)
 
 ---
