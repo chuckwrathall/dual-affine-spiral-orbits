@@ -76,6 +76,48 @@
             overflow-x: auto;
             padding: 8px 0;
         }
+
+        .results {
+            margin: 2rem 0;
+            padding: 1.8rem;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            line-height: 1.85;
+        }
+
+        .results ul {
+            margin-top: 1rem;
+            padding-left: 1.4rem;
+            list-style-type: disc;
+        }
+
+        .results ul li {
+            margin-bottom: 0.9rem;
+        }
+
+        .links {
+            margin: 2rem 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+
+        .links a {
+            display: inline-block;
+            padding: 0.5rem 1.2rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            color: #333;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .links a:hover {
+            background: #f0f0f0;
+            color: #000;
+        }
         
         @media (max-width: 640px) {
             .equation { font-size: 0.97rem; }
@@ -113,16 +155,32 @@
             
             <br><br>
             
-            Both sequences satisfy linear recurrences driven by multiplication by the Gaussian integer \(1 + i\). We prove that the paired points remain symmetric with respect to the fixed midpoint \(M = (-\frac{1}{2}, 1)\) for all \(n\), satisfying the invariant \(P_n + N_n = (-1, 2)\). Extending the iteration backward under the associated inverse maps produces the attractor of the well-known Twindragon fractal. In addition, the paired points yield the normalized quadratic sequence
+            Both sequences satisfy linear recurrences driven by multiplication by the Gaussian integer \(1 + i\). We show that the paired points remain symmetric with respect to the fixed midpoint \(M = (-\frac{1}{2}, 1)\) for all \(n\), satisfying the invariant \(P_n + N_n = (-1, 2)\). Extending the iteration backward under the associated inverse maps produces an iterated function system whose attractor is affinely equivalent to the Twindragon fractal. In addition, the paired points yield the normalized quadratic sequence
             
             <div class="equation">
                 \( a(n) = \dfrac{|P_n|^2 + |N_n|^2}{5} = 2^{n+1} + 1 - 2 \operatorname{Re}((1 + i)^n) \)
             </div>
             
-            which is always an integer and appears as A396151 in the OEIS. The construction therefore provides a new lattice-based viewpoint on the geometry and dynamics of the Twindragon.
+            which is always an integer and appears as A396151 in the OEIS.
         </div>
 
-        <div class="text-center mt-12">
+        <div class="results">
+            <strong>Results</strong>
+            <ul>
+                <li>The Gaussian integer \((1+i)^n\) encodes the coordinates of both orbit points, the side length, the square area, and the orientation angle at each step.</li>
+                <li>The paired points satisfy \(P_n + N_n = (-1, 2)\) for all \(n\). The midpoint \(M = (-\frac{1}{2}, 1)\) is the only non-lattice point in the construction.</li>
+                <li>When extended backward, the inverse maps form an iterated function system whose attractor is affinely equivalent to the Twindragon fractal. As \(n \to -\infty\), \(P_n \to N_0\) and \(N_n \to P_0\), with the common distance to \(M\) approaching \(\sqrt{5}/2\).</li>
+                <li>The sequence \(a(n)\) is always an integer and appears in the OEIS as A396151.</li>
+            </ul>
+        </div>
+
+        <div class="links">
+            <a href="https://oeis.org/A396151" target="_blank">OEIS A396151</a>
+            <a href="https://orcid.org/0009-0004-7008-4489" target="_blank">ORCID</a>
+            <a href="https://github.com/chuckwrathall" target="_blank">GitHub</a>
+        </div>
+
+        <div class="text-center mt-8">
             <a href="paper.pdf" class="inline-block bg-stone-800 hover:bg-black text-white font-medium px-10 py-4 rounded-lg text-lg transition">
                 Download the Full PDF
             </a>
