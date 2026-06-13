@@ -25,16 +25,14 @@ which is always an integer and appears as A396151 in the OEIS.
 
 ### View the Full Paper
 
-- Web version → [Open the Full Paper](https://chuckwrathall.github.io/dual-affine-spiral-orbits/)  
+- Paper Overview Page → [Paper and Interactive Model](https://chuckwrathall.github.io/dual-affine-spiral-orbits/)  
 
 - Download the PDF → [paper.pdf](paper.pdf)
 
 ---
 
-### References
+### Submissions
 - OEIS A396151: https://oeis.org/A396151
-- C. Davis and D. E. Knuth, “Number representations and dragon curves,” Journal of Recreational Mathematics, 3:66–81 and 133–149, 1970.
-
 ---
 
 ### How to Cite
