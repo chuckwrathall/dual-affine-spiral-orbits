@@ -43,7 +43,15 @@
   .hint { font-size: 10.5px; color: #000; line-height: 1.5; margin-top: 6px; }
   #readout { font-size: 11px; color: #000; line-height: 1.5; }
   code { font-family: Arial; }
-
+  /* collapsible side panel */
+  #panelToggle {
+    position: absolute; top: 8px; left: 8px; z-index: 20;
+    width: 26px; height: 26px; padding: 0; margin: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; line-height: 1; border: 1px solid #000; background: #fff; color: #000; cursor: pointer;
+  }
+  #panelToggle:hover { background: #000; color: #fff; }
+  #app.panel-collapsed #panel { display: none; }
   /* Narrow screens / phones: stack the panel as a compact top bar; desktop keeps the left sidebar. */
   @media (max-width: 700px) {
     #app { flex-direction: column; }
@@ -61,24 +69,38 @@
     #gKey .key { column-count: 2; column-gap: 16px; }
     #gKey .key > div { break-inside: avoid; }
   }
+
+  /* ---------- dark mode ---------- */
+  body.dark { background: #0b0b0b; color: #fff; }
+  body.dark #panel { background: #0b0b0b; border-right-color: #444; }
+  body.dark canvas { background: #0b0b0b; }
+  body.dark .grp { border-top-color: #444; }
+  body.dark .hint, body.dark #readout, body.dark .sub { color: #fff; }
+  body.dark input[type=checkbox], body.dark input[type=range] { accent-color: #fff; }
+  body.dark button { border-color: #666; background: #0b0b0b; color: #fff; }
+  body.dark button:hover { background: #fff; color: #000; }
+  body.dark #panelToggle { border-color: #666; background: #0b0b0b; color: #fff; }
+  body.dark #panelToggle:hover { background: #fff; color: #000; }
+  body.dark .dt { background: #fff; }
+  body.dark .ln { border-top-color: #fff; }
+  @media (max-width: 700px) { body.dark #panel { border-bottom-color: #444; } }
 </style>
 </head>
 <body>
 <div id="app">
   <div id="panel">
     <h1>Dual Affine Spiral Orbits on Z&sup2; Interactive Model</h1>
-
     <div class="formula">
       P<sub>n</sub> = (&minus;1+2i)[1&minus;(1+i)<sup>n</sup>]<br>
       N<sub>n</sub> = (&minus;1+2i)(1+i)<sup>n</sup><br>
       P<sub>n</sub> + N<sub>n</sub> = (&minus;1,2),&nbsp; M = (&minus;&frac12;,1)
     </div>
-
     <div class="grp" id="gControls">
-      <button id="btnPng">Save PNG</button>
+      <button id="btnPng"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:5px" aria-hidden="true"><path d="M12 3a1 1 0 0 1 1 1v8.59l2.3-2.3a1 1 0 1 1 1.4 1.42l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.42l2.3 2.3V4a1 1 0 0 1 1-1zM5 18a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1z"/></svg>Save PNG</button>
       <button id="btnForward">Forward spiral</button>
       <button id="btnM">Zoom to M</button>
       <button id="btnDragon">Twindragon view</button>
+      <button id="btnTheme"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:5px" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Dark mode</button>
       <div class="rlabel" style="margin-top:14px"><span>Iteration n</span><span id="nVal">+9</span></div>
       <div class="srow">
         <button id="nDec" class="stepbtn" title="One iteration back (←)">&#9664;</button>
@@ -87,7 +109,6 @@
       </div>
       <div class="hint">Drag to pan, scroll to zoom; slide or press &larr;/&rarr; to step through iterations n. Click a point to read its coordinate.</div>
     </div>
-
     <div class="grp" id="gToggles">
       <label class="row"><input type="checkbox" id="cHypo"> Hypotenuse lines</label>
       <label class="row"><input type="checkbox" id="cColor" checked> Color orbits (P red / N blue)</label>
@@ -95,13 +116,12 @@
       <label class="row"><input type="checkbox" id="cNeg" checked> Negative orbit N<sub>n</sub></label>
       <label class="row"><input type="checkbox" id="cSquares" checked> Paired squares</label>
       <label class="row"><input type="checkbox" id="cPath" checked> Connecting path</label>
-      <label class="row"><input type="checkbox" id="cLabels" checked> n labels</label>
+      <label class="row"><input type="checkbox" id="cLabels"> n labels</label>
       <label class="row"><input type="checkbox" id="cPoints" checked> Points</label>
-      <label class="row"><input type="checkbox" id="cMid" checked> Midpoint M</label>
+      <label class="row"><input type="checkbox" id="cMid"> Midpoint M</label>
       <label class="row"><input type="checkbox" id="cGrid" checked> Lattice grid</label>
-      <label class="row"><input type="checkbox" id="cDragon" checked> Twindragon overlay (n&lt;0)</label>
+      <label class="row"><input type="checkbox" id="cDragon" checked> Twindragon overlay</label>
     </div>
-
     <div class="grp" id="gKey">
       <div class="keytitle">Key</div>
       <div class="key">
@@ -114,43 +134,37 @@
         <div><span class="mk"><span class="ln" id="hypPos" style="border-top-style:solid"></span></span>Positive hypotenuse lines (meet at (&minus;1,2))</div>
         <div><span class="mk"><span class="ln" id="hypNeg" style="border-top-style:solid"></span></span>Negative hypotenuse lines (meet at (0,0))</div>
         <div><span class="mk"><span class="dt"></span></span>Midpoint M (center of symmetry)</div>
-        <div><span class="mk"><canvas id="dragonIcon" width="48" height="32"></canvas></span>Twindragon attractor (n&lt;0)</div>
+        <div><span class="mk"><canvas id="dragonIcon" width="48" height="32"></canvas></span>Twindragon attractor</div>
         <div><span class="mk"><svg class="ic" viewBox="0 0 14 14" width="14" height="14"><rect x="0.5" y="0.5" width="13" height="13" fill="#fff" stroke="#bbb"/><line x1="5" y1="0.5" x2="5" y2="13.5" stroke="#ddd"/><line x1="9.5" y1="0.5" x2="9.5" y2="13.5" stroke="#ddd"/><line x1="0.5" y1="5" x2="13.5" y2="5" stroke="#ddd"/><line x1="0.5" y1="9.5" x2="13.5" y2="9.5" stroke="#ddd"/></svg></span>Integer lattice Z&sup2;</div>
       </div>
     </div>
-
     <div class="grp">
       <div id="readout"></div>
     </div>
   </div>
-
   <div id="stage">
+    <button id="panelToggle" title="Hide panel" aria-label="Hide panel">&#9664;</button>
     <canvas id="cv"></canvas>
   </div>
 </div>
-
 <script>
 "use strict";
 // ---------- complex helpers ----------
 const cmul = (a,b)=>[a[0]*b[0]-a[1]*b[1], a[0]*b[1]+a[1]*b[0]];
 const cadd = (a,b)=>[a[0]+b[0], a[1]+b[1]];
 const csub = (a,b)=>[a[0]-b[0], a[1]-b[1]];
-
 const NMAX = 33;
 const ONE_PLUS_I = [1,1];
 const INV = [0.5,-0.5];      // 1/(1+i)
 const M12 = [-1,2];          // -1 + 2i
-
 // powers (1+i)^n for n = -NMAX..NMAX
 const POW = {};
 let p = [1,0];
 for (let n=0;n<=NMAX;n++){ POW[n]=p; p=cmul(p,ONE_PLUS_I); }
 p=[1,0];
 for (let n=-1;n>=-NMAX;n--){ p=cmul(p,INV); POW[n]=p; }
-
 const P = n => cmul(M12, csub([1,0], POW[n]));   // positive orbit
 const N = n => cmul(M12, POW[n]);                // negative orbit
-
 // paired-square corner offsets (unit base), scaled by (1+i)^n.
 // Square A and its point-reflection B through the iteration point.
 const BASE_POS = [[0,0],[-1,0],[-1,1],[0,1]];    // ordered around the square
@@ -161,9 +175,7 @@ function squarePair(center, n, base){
   const B = base.map(o=>csub(center, cmul(w,o)));
   return [A,B];
 }
-
 const M = [-0.5,1];
-
 // ---------- Twindragon attractor of the backward IFS ----------
 // Backward maps from the paper: S^-1 = f1 (negative-orbit), T^-1 = f2 (positive-orbit).
 const F1 = z => cmul(z, INV);                 // z/(1+i),  fixed point 0  = P_0
@@ -195,7 +207,6 @@ function buildDragon(){
   dragon={canvas:off};
 }
 buildDragon();
-
 // mini Twindragon silhouette for the key, recoloured to grey
 function renderDragonIcon(){
   const c=document.getElementById('dragonIcon');
@@ -210,13 +221,32 @@ function renderDragonIcon(){
   ic.fillStyle='#9a9a9a'; ic.fillRect(0,0,CW,CH);
   ic.globalCompositeOperation='source-over';
 }
-
+// ---------- theme (light / dark) ----------
+let dark = false;
+function colors(){
+  return dark
+    ? { bg:'#0b0b0b', grid:'#2a2a2a', axis:'#555555', ink:'#ffffff', mono:'#ffffff' }
+    : { bg:'#ffffff', grid:'#dddddd', axis:'#aaaaaa', ink:'#000000', mono:'#000000' };
+}
+let THEME = colors();
+// recoloured Twindragon silhouettes, cached per colour (black for light, white for dark)
+const dragonTints = {};
+function getDragon(color){
+  if(dragonTints[color]) return dragonTints[color];
+  const src = dragon.canvas;
+  const t = document.createElement('canvas'); t.width = src.width; t.height = src.height;
+  const tc = t.getContext('2d');
+  tc.drawImage(src, 0, 0);
+  tc.globalCompositeOperation = 'source-in';
+  tc.fillStyle = color; tc.fillRect(0, 0, t.width, t.height);
+  dragonTints[color] = t;
+  return t;
+}
 // ---------- view transform ----------
 const cv = document.getElementById('cv');
 const ctx = cv.getContext('2d');
 let view = { scale: 24, ox: 0, oy: 0 };   // world->screen: sx = ox + x*scale ; sy = oy - y*scale
 let DPR = window.devicePixelRatio || 1;
-
 function resize(){
   DPR = window.devicePixelRatio || 1;
   const r = cv.getBoundingClientRect();
@@ -226,7 +256,6 @@ function resize(){
 }
 const W = ()=>cv.width/DPR, H = ()=>cv.height/DPR;
 const toS = pt => [view.ox + pt[0]*view.scale, view.oy - pt[1]*view.scale];
-
 // ---------- controls state ----------
 const ui = {};
 ['nRange'].forEach(id=>ui[id]=document.getElementById(id));
@@ -234,10 +263,18 @@ const opt = id => document.getElementById(id).checked;
 function sVal(){ return +ui.nRange.value; }
 function nLo(){ return Math.min(0, sVal()); }
 function nHi(){ return Math.max(0, sVal()); }
-
 // ---------- fit ----------
+// Frame range for the auto-fit. Iterations 2 and below (all the way to -33) share the
+// n=2 frame, so stepping through the small and negative iterations holds a steady zoom
+// (and that frame also contains the whole Twindragon). For n >= 3 the view fits to the
+// points. The drawn range (nLo..nHi) is unchanged.
+function fitRange(){
+  const s=sVal();
+  if(s>=3) return [0, s];
+  return [Math.min(s,0), 2];
+}
 function visiblePoints(){
-  const lo=nLo(), hi=nHi(); const pts=[];
+  const [lo,hi]=fitRange(); const pts=[];
   for(let n=lo;n<=hi;n++){
     if(opt('cPos')) pts.push(P(n));
     if(opt('cNeg')) pts.push(N(n));
@@ -265,7 +302,7 @@ function savePng(){
   const out=document.createElement('canvas');
   out.width=cv.width; out.height=cv.height;
   const o=out.getContext('2d');
-  o.fillStyle='#fff'; o.fillRect(0,0,out.width,out.height);
+  o.fillStyle=THEME.bg; o.fillRect(0,0,out.width,out.height);
   o.drawImage(cv,0,0);
   const a=document.createElement('a');
   a.href=out.toDataURL('image/png');
@@ -289,7 +326,6 @@ function zoomToDragon(){
   view.oy=(H()+(DBY0+DBY1)*s)/2;
   draw();
 }
-
 // ---------- drawing ----------
 function drawGrid(){
   const s=view.scale;
@@ -298,18 +334,17 @@ function drawGrid(){
   const x1 = Math.ceil((W()-view.ox)/s);
   const y0 = Math.floor((view.oy-H())/s);
   const y1 = Math.ceil((view.oy)/s);
-  ctx.strokeStyle = '#dddddd'; ctx.lineWidth = 1;
+  ctx.strokeStyle = THEME.grid; ctx.lineWidth = 1;
   ctx.beginPath();
   for(let x=x0;x<=x1;x++){ const sx=view.ox+x*s; ctx.moveTo(sx,0); ctx.lineTo(sx,H()); }
   for(let y=y0;y<=y1;y++){ const sy=view.oy-y*s; ctx.moveTo(0,sy); ctx.lineTo(W(),sy); }
   ctx.stroke();
   // axes a touch darker
-  ctx.strokeStyle = '#aaaaaa'; ctx.lineWidth = 1; ctx.beginPath();
+  ctx.strokeStyle = THEME.axis; ctx.lineWidth = 1; ctx.beginPath();
   ctx.moveTo(view.ox,0); ctx.lineTo(view.ox,H());
   ctx.moveTo(0,view.oy); ctx.lineTo(W(),view.oy);
   ctx.stroke();
 }
-
 function drawSquares(orbitFn, base, lo, hi, color){
   ctx.strokeStyle=color; ctx.lineWidth=1;
   for(let n=lo;n<=hi;n++){
@@ -324,7 +359,6 @@ function drawSquares(orbitFn, base, lo, hi, color){
     }
   }
 }
-
 // Full hypotenuse line at each step, through the two outer leg-endpoints and drawn continuously across
 // the view. All positive-orbit lines pass through N0=(-1,2); all negative-orbit lines through P0=(0,0).
 function drawHypotenuse(orbitFn, offs, lo, hi, color){
@@ -342,7 +376,6 @@ function drawHypotenuse(orbitFn, offs, lo, hi, color){
     ctx.stroke();
   }
 }
-
 function drawPath(orbitFn, dashed, lo, hi, color){
   ctx.strokeStyle=color; ctx.lineWidth=1.4;
   ctx.setLineDash(dashed?[5,4]:[]);
@@ -354,29 +387,24 @@ function drawPath(orbitFn, dashed, lo, hi, color){
   ctx.stroke();
   ctx.setLineDash([]);
 }
-
 // shared between the P and N label passes so they don't collide with each other
 let placedLabels=[];
 let placedPoints=[];
 const rectsOverlap=(a,b)=> !(a.x+a.w<b.x || b.x+b.w<a.x || a.y+a.h<b.y || b.y+b.h<a.y);
-
 function drawDragon(){
   if(!dragon) return;
   const tl=toS([DBX0, DBY1]);                       // world top-left corner -> screen
   const w=(DBX1-DBX0)*view.scale, h=(DBY1-DBY0)*view.scale;
   ctx.save();
   ctx.globalAlpha=0.16;
-  ctx.drawImage(dragon.canvas, tl[0], tl[1], w, h);
+  ctx.drawImage(getDragon(THEME.ink), tl[0], tl[1], w, h);
   ctx.restore();
 }
-
 const outOfView = s => s[0]<-60||s[0]>W()+60||s[1]<-60||s[1]>H()+60;
 // candidate placement angles, tried in order; outward-from-M is rotated to angle 0
 const ANG_OFFSETS = [0,-38,38,-78,78,-120,120,162,180].map(d=>d*Math.PI/180);
-
 function drawPointsLabels(orbitFn, letter, lo, hi, color){
   const showPts=opt('cPoints'), showLab=opt('cLabels');
-
   // collect on-screen points first (used both for dots and for label avoidance)
   const pts=[];
   for(let n=lo;n<=hi;n++){
@@ -390,7 +418,6 @@ function drawPointsLabels(orbitFn, letter, lo, hi, color){
     placedPoints.push(...pts.map(p=>p.s));
   }
   if(!showLab) return;
-
   const hgt=15;
   ctx.fillStyle=color; ctx.textBaseline='alphabetic';
   for(const p of pts){
@@ -409,7 +436,6 @@ function drawPointsLabels(orbitFn, letter, lo, hi, color){
     ctx.font='italic 13px Arial'; const lw=ctx.measureText(letter).width;
     ctx.font='9px Arial';         const sw=ctx.measureText(sub).width;
     const total=lw+sw;
-
     let best=null;
     for(const ao of ANG_OFFSETS){
       const ang=baseAng+ao;
@@ -431,21 +457,19 @@ function drawPointsLabels(orbitFn, letter, lo, hi, color){
     ctx.font='9px Arial';         ctx.fillText(sub, best.startX+best.lw+0.5, best.baseY+3);
   }
 }
-
 function drawM(){
   const s=toS(M);
-  ctx.fillStyle='#000';
+  ctx.fillStyle=THEME.ink;
   ctx.beginPath(); ctx.arc(s[0],s[1],2.6,0,7); ctx.fill();
   ctx.font='bold 12px Arial';
   ctx.fillText('M', s[0]+6, s[1]+1);
 }
-
 let clickPt=null;   // [x,y] integer lattice point selected by a click
 function drawClick(){
   if(!clickPt) return;
   const s=toS(clickPt);
   if(s[0]<-50||s[0]>W()+50||s[1]<-50||s[1]>H()+50) return;
-  ctx.strokeStyle='#000'; ctx.fillStyle='#000'; ctx.lineWidth=1.3;
+  ctx.strokeStyle=THEME.ink; ctx.fillStyle=THEME.ink; ctx.lineWidth=1.3;
   ctx.beginPath(); ctx.arc(s[0],s[1],2.5,0,7); ctx.fill();
   ctx.beginPath(); ctx.arc(s[0],s[1],6.5,0,7); ctx.stroke();
   const txt='('+clickPt[0]+', '+clickPt[1]+')';
@@ -454,25 +478,25 @@ function drawClick(){
   let lx=s[0]+10, ly=s[1]-10;
   if(lx+w+4>W()) lx=s[0]-10-w;          // flip left near right edge
   if(ly-12<4)    ly=s[1]+20;            // drop below near top edge
-  ctx.fillStyle='#fff'; ctx.fillRect(lx-3, ly-13, w+6, 17);
-  ctx.strokeStyle='#000'; ctx.lineWidth=0.8; ctx.strokeRect(lx-3, ly-13, w+6, 17);
-  ctx.fillStyle='#000'; ctx.fillText(txt, lx, ly);
+  ctx.fillStyle=THEME.bg; ctx.fillRect(lx-3, ly-13, w+6, 17);
+  ctx.strokeStyle=THEME.ink; ctx.lineWidth=0.8; ctx.strokeRect(lx-3, ly-13, w+6, 17);
+  ctx.fillStyle=THEME.ink; ctx.fillText(txt, lx, ly);
 }
-
 function draw(){
   ctx.setTransform(DPR,0,0,DPR,0,0);
   ctx.clearRect(0,0,W(),H());
   const lo=nLo(), hi=nHi(), s=sVal();
+  THEME = colors();
   const colorOn=opt('cColor');
-  const posCol = colorOn ? '#d01010' : '#000';   // positive orbit -> red
-  const negCol = colorOn ? '#0a3cdc' : '#000';   // negative orbit -> blue
+  const posCol = colorOn ? '#d01010' : THEME.mono;   // positive orbit -> red (mono uses the ink colour)
+  const negCol = colorOn ? '#0a3cdc' : THEME.mono;   // negative orbit -> blue (mono uses the ink colour)
   const setC=(id,prop,val)=>{ const e=document.getElementById(id); if(e) e.style[prop]=val; };
   setC('lnPos','borderTopColor',posCol); setC('lnNeg','borderTopColor',negCol);
   setC('ptPos','background',posCol);     setC('ptNeg','background',negCol);
   setC('sqPos','color',posCol);          setC('sqNeg','color',negCol);   // svg rects use currentColor
   setC('hypPos','borderTopColor',posCol);setC('hypNeg','borderTopColor',negCol);
   if(opt('cGrid')) drawGrid();
-  if(opt('cDragon') && s<0) drawDragon();                       // attractor shows when exploring negative iterations
+  if(opt('cDragon')) drawDragon();                              // attractor always shown; shrinks into the spiral at larger n
   if(opt('cHypo')){
     if(opt('cPos')) drawHypotenuse(P, [[1,0],[0,1]],   lo, hi, posCol);
     if(opt('cNeg')) drawHypotenuse(N, [[-1,0],[0,-1]], lo, hi, negCol);
@@ -492,13 +516,11 @@ function draw(){
   drawClick();
   updateReadout();
 }
-
 function updateReadout(){
   const s=sVal();
   document.getElementById('readout').textContent =
     'iterations '+nLo()+' to '+nHi()+'   (n = '+(s>=0?'+':'')+s+')   scale '+view.scale.toFixed(2)+' px/unit';
 }
-
 // ---------- interaction ----------
 let drag=null, dragMoved=false;
 cv.addEventListener('mousedown',e=>{ drag={x:e.clientX,y:e.clientY,ox:view.ox,oy:view.oy}; dragMoved=false; cv.classList.add('dragging'); });
@@ -534,7 +556,6 @@ cv.addEventListener('wheel',e=>{
   view.oy=my+wy*view.scale;
   draw();
 },{passive:false});
-
 // touch (basic pan + pinch)
 let touch=null;
 cv.addEventListener('touchstart',e=>{
@@ -558,7 +579,6 @@ cv.addEventListener('touchmove',e=>{
   }
 },{passive:false});
 cv.addEventListener('touchend',()=>{touch=null;});
-
 // ---------- wire up ----------
 ['cPos','cNeg','cSquares','cHypo','cPath','cLabels','cPoints','cMid','cGrid','cDragon','cColor'].forEach(id=>
   document.getElementById(id).addEventListener('change',draw));
@@ -580,7 +600,26 @@ document.getElementById('btnForward').addEventListener('click',()=>setN(33));
 document.getElementById('btnM').addEventListener('click',zoomToM);
 document.getElementById('btnDragon').addEventListener('click',zoomToDragon);
 window.addEventListener('resize',resize);
-
+// collapse / expand the side panel
+const appEl = document.getElementById('app');
+const panelToggle = document.getElementById('panelToggle');
+panelToggle.addEventListener('click',()=>{
+  const collapsed = appEl.classList.toggle('panel-collapsed');
+  panelToggle.textContent = collapsed ? '▶' : '◀';
+  panelToggle.title = collapsed ? 'Show panel' : 'Hide panel';
+  panelToggle.setAttribute('aria-label', panelToggle.title);
+  resize();
+});
+// light / dark theme
+const btnTheme = document.getElementById('btnTheme');
+const MOON = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:5px" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const SUN = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:5px" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>';
+btnTheme.addEventListener('click',()=>{
+  dark=!dark;
+  document.body.classList.toggle('dark', dark);
+  btnTheme.innerHTML = (dark?SUN:MOON) + (dark?'Light mode':'Dark mode');
+  draw();
+});
 // init
 resize();
 fit();
