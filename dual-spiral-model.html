@@ -9,29 +9,21 @@
   html, body { margin: 0; padding: 0; background: #ffffff; color: #000000; }
   #app { display: flex; height: 100vh; width: 100vw; overflow: hidden; }
   #panel {
-    width: 280px; min-width: 280px; height: 100%; overflow-y: auto;
+    width: 290px; min-width: 290px; height: 100%; overflow-y: auto;
     border-right: 1px solid #000; padding: 14px 16px; background: #ffffff;
   }
   #stage { flex: 1; position: relative; }
   canvas { display: block; width: 100%; height: 100%; cursor: grab; background: #ffffff; }
   canvas.dragging { cursor: grabbing; }
-  h1 { font-size: 15px; margin: 0 0 2px; }
-  .sub { font-size: 11px; color: #000; margin: 0 0 14px; line-height: 1.4; }
+  h1 { font-size: 15px; margin: 0 0 12px; }
   .grp { border-top: 1px solid #000; padding: 12px 0 4px; }
-  .grp:first-of-type { border-top: none; }
-  label.row { display: flex; align-items: center; font-size: 12px; margin: 5px 0; cursor: pointer; }
-  input[type=checkbox] { width: 14px; height: 14px; accent-color: #000; margin-right: 8px; flex: 0 0 auto; }
-  .rlabel { font-size: 12px; display: flex; justify-content: space-between; margin: 10px 0 3px; }
+  .grp:first-of-type { border-top: none; padding-top: 4px; }
+  .rlabel { font-size: 12px; display: flex; justify-content: space-between; margin: 12px 0 5px; }
   input[type=range] { width: 100%; accent-color: #000; }
-  .srow { display: flex; align-items: center; gap: 6px; }
+  .srow { display: flex; align-items: center; gap: 8px; }
   .srow input[type=range] { flex: 1; }
-  .stepbtn { margin: 0; padding: 1px 8px; font-size: 13px; line-height: 1.3; }
-  button {
-    font-size: 12px; font-family: Arial; border: 1px solid #000; background: #fff; color: #000;
-    padding: 5px 8px; cursor: pointer; border-radius: 0; margin: 3px 4px 3px 0;
-  }
-  button:hover { background: #000; color: #fff; }
-  .formula { font-size: 12px; line-height: 1.85; margin: 8px 0 2px; }
+  .hint { font-size: 10.5px; color: #000; line-height: 1.5; margin-top: 8px; }
+  #readout { font-size: 11px; color: #000; line-height: 1.5; }
   .keytitle { font-size: 12px; font-weight: bold; margin: 2px 0 6px; }
   .key { font-size: 11px; }
   .key > div { display: flex; align-items: center; margin: 4px 0; }
@@ -40,87 +32,95 @@
   .dt  { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #000; vertical-align: middle; }
   .ic  { vertical-align: middle; }
   #dragonIcon { width: 24px; height: 16px; vertical-align: middle; }
-  .hint { font-size: 10.5px; color: #000; line-height: 1.5; margin-top: 6px; }
-  #readout { font-size: 11px; color: #000; line-height: 1.5; }
   code { font-family: Arial; }
-  /* collapsible side panel */
-  #panelToggle {
-    position: absolute; top: 8px; left: 8px; z-index: 20;
-    width: 26px; height: 26px; padding: 0; margin: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; line-height: 1; border: 1px solid #000; background: #fff; color: #000; cursor: pointer;
-  }
-  #panelToggle:hover { background: #000; color: #fff; }
-  #app.panel-collapsed #panel { display: none; }
-  /* Narrow screens / phones: stack the panel as a compact top bar; desktop keeps the left sidebar. */
-  @media (max-width: 700px) {
-    #app { flex-direction: column; }
-    #panel {
-      width: 100%; min-width: 0; height: auto; max-height: 46vh; overflow-y: auto;
-      border-right: none; border-bottom: 1px solid #000; padding: 12px 16px;
-      display: flex; flex-wrap: wrap; align-items: flex-start; gap: 2px 26px;
-    }
-    #panel h1 { width: 100%; }
-    #stage { min-height: 0; }
-    .grp, .grp:first-of-type { border-top: none; padding: 4px 0; min-width: 158px; }
-    #gControls { min-width: 238px; }
-    #gToggles { column-count: 2; column-gap: 22px; }
-    #gToggles label.row { break-inside: avoid; }
-    #gKey .key { column-count: 2; column-gap: 16px; }
-    #gKey .key > div { break-inside: avoid; }
-  }
 
-  /* ---------- dark mode ---------- */
+  /* pill action buttons */
+  .pill { font-family: Arial; font-size: 12px; border: 1px solid #000; background: #fff; color: #000; border-radius: 999px; padding: 8px 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 7px; transition: background .15s, color .15s, border-color .15s; }
+  .pill:hover { background: #000; color: #fff; }
+  .pill svg { display: block; }
+  .pill-block { display: flex; width: 100%; margin: 0 0 8px; }
+  .pill-round { width: 36px; height: 36px; padding: 0; flex: 0 0 auto; font-size: 12px; }
+
+  /* toggle pills */
+  .toggle { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px; font-family: Arial; font-size: 12px; text-align: left; border: 1px solid #cfcac4; background: #fff; color: #7a756f; border-radius: 999px; padding: 7px 8px 7px 14px; cursor: pointer; margin: 0 0 6px; transition: color .15s, border-color .15s; }
+  .toggle:hover { border-color: #000; }
+  .toggle.on { color: #000; border-color: #000; }
+  .toggle .sw { width: 30px; height: 17px; border-radius: 999px; background: #d3cfc9; position: relative; flex: 0 0 auto; transition: background .15s; }
+  .toggle .sw::after { content: ''; position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; transition: left .15s; }
+  .toggle.on .sw { background: #000; }
+  .toggle.on .sw::after { left: 15px; }
+
+  /* floating buttons over the graph */
+  .fab { position: absolute; z-index: 20; background: #fff; border: 1px solid #000; color: #000; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-family: Arial; font-size: 12px; box-shadow: 0 2px 6px rgba(0,0,0,.12); transition: background .15s, color .15s; }
+  .fab:hover { background: #000; color: #fff; }
+  .fab svg { display: block; }
+  #panelToggle { top: 10px; left: 10px; width: 34px; height: 34px; border-radius: 50%; padding: 0; }
+  #btnTheme { top: 10px; right: 10px; width: 38px; height: 38px; border-radius: 50%; padding: 0; }
+  #btnPng { left: 10px; bottom: 10px; border-radius: 999px; padding: 8px 14px; }
+  #app.panel-collapsed #panel { display: none; }
+
+  /* dark mode */
   body.dark { background: #0b0b0b; color: #fff; }
   body.dark #panel { background: #0b0b0b; border-right-color: #444; }
   body.dark canvas { background: #0b0b0b; }
   body.dark .grp { border-top-color: #444; }
-  body.dark .hint, body.dark #readout, body.dark .sub { color: #fff; }
-  body.dark input[type=checkbox], body.dark input[type=range] { accent-color: #fff; }
-  body.dark button { border-color: #666; background: #0b0b0b; color: #fff; }
-  body.dark button:hover { background: #fff; color: #000; }
-  body.dark #panelToggle { border-color: #666; background: #0b0b0b; color: #fff; }
-  body.dark #panelToggle:hover { background: #fff; color: #000; }
+  body.dark .hint, body.dark #readout, body.dark .keytitle, body.dark .key { color: #fff; }
+  body.dark input[type=range] { accent-color: #fff; }
+  body.dark .pill { border-color: #666; background: #0b0b0b; color: #fff; }
+  body.dark .pill:hover { background: #fff; color: #000; }
+  body.dark .toggle { border-color: #444; background: #0b0b0b; color: #8a857f; }
+  body.dark .toggle:hover { border-color: #fff; }
+  body.dark .toggle.on { color: #fff; border-color: #fff; }
+  body.dark .toggle .sw { background: #555; }
+  body.dark .toggle .sw::after { background: #0b0b0b; }
+  body.dark .toggle.on .sw { background: #fff; }
   body.dark .dt { background: #fff; }
   body.dark .ln { border-top-color: #fff; }
-  @media (max-width: 700px) { body.dark #panel { border-bottom-color: #444; } }
+  body.dark .fab { background: #1a1a1a; border-color: #666; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.5); }
+  body.dark .fab:hover { background: #fff; color: #000; }
+
+  /* narrow screens / phones */
+  @media (max-width: 700px) {
+    #app { flex-direction: column; }
+    #panel {
+      width: 100%; min-width: 0; height: auto; max-height: 50vh; overflow-y: auto;
+      border-right: none; border-bottom: 1px solid #000; padding: 12px 16px;
+    }
+    body.dark #panel { border-bottom-color: #444; }
+    #stage { min-height: 0; }
+    #gToggles { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; }
+    #gToggles .toggle { margin: 0; }
+  }
 </style>
 </head>
 <body>
 <div id="app">
   <div id="panel">
     <h1>Dual Affine Spiral Orbits on Z&sup2; Interactive Model</h1>
-    <div class="formula">
-      P<sub>n</sub> = (&minus;1+2i)[1&minus;(1+i)<sup>n</sup>]<br>
-      N<sub>n</sub> = (&minus;1+2i)(1+i)<sup>n</sup><br>
-      P<sub>n</sub> + N<sub>n</sub> = (&minus;1,2),&nbsp; M = (&minus;&frac12;,1)
-    </div>
     <div class="grp" id="gControls">
-      <button id="btnPng"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:5px" aria-hidden="true"><path d="M12 3a1 1 0 0 1 1 1v8.59l2.3-2.3a1 1 0 1 1 1.4 1.42l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.42l2.3 2.3V4a1 1 0 0 1 1-1zM5 18a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1z"/></svg>Save PNG</button>
-      <button id="btnForward">Forward spiral</button>
-      <button id="btnM">Zoom to M</button>
-      <button id="btnDragon">Twindragon view</button>
-      <button id="btnTheme"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:5px" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Dark mode</button>
-      <div class="rlabel" style="margin-top:14px"><span>Iteration n</span><span id="nVal">+9</span></div>
+      <button class="pill pill-block" id="btnDragon">Twindragon Spirals View</button>
+      <button class="pill pill-block" id="btnM">Base Iteration (P&#8320;, M, N&#8320;)</button>
+      <button class="pill pill-block" id="btnForward">Dual Affine Spirals Full View</button>
+      <div class="rlabel"><span>Iteration n</span><span id="nVal">+9</span></div>
       <div class="srow">
-        <button id="nDec" class="stepbtn" title="One iteration back (←)">&#9664;</button>
+        <button id="nDec" class="pill pill-round" title="One iteration back (←)">&#9664;</button>
         <input type="range" id="nRange" min="-33" max="33" value="9" step="1">
-        <button id="nInc" class="stepbtn" title="One iteration forward (→)">&#9654;</button>
+        <button id="nInc" class="pill pill-round" title="One iteration forward (→)">&#9654;</button>
       </div>
       <div class="hint">Drag to pan, scroll to zoom; slide or press &larr;/&rarr; to step through iterations n. Click a point to read its coordinate.</div>
     </div>
     <div class="grp" id="gToggles">
-      <label class="row"><input type="checkbox" id="cHypo"> Hypotenuse lines</label>
-      <label class="row"><input type="checkbox" id="cColor" checked> Color orbits (P red / N blue)</label>
-      <label class="row"><input type="checkbox" id="cPos" checked> Positive orbit P<sub>n</sub></label>
-      <label class="row"><input type="checkbox" id="cNeg" checked> Negative orbit N<sub>n</sub></label>
-      <label class="row"><input type="checkbox" id="cSquares" checked> Paired squares</label>
-      <label class="row"><input type="checkbox" id="cPath" checked> Connecting path</label>
-      <label class="row"><input type="checkbox" id="cLabels"> n labels</label>
-      <label class="row"><input type="checkbox" id="cPoints" checked> Points</label>
-      <label class="row"><input type="checkbox" id="cMid"> Midpoint M</label>
-      <label class="row"><input type="checkbox" id="cGrid" checked> Lattice grid</label>
-      <label class="row"><input type="checkbox" id="cDragon" checked> Twindragon overlay</label>
+      <button class="toggle on" id="cDragon" aria-pressed="true"><span>Twindragon Overlay</span><span class="sw"></span></button>
+      <button class="toggle on" id="cColor" aria-pressed="true"><span>Colour Orbits (P=red / N=blue)</span><span class="sw"></span></button>
+      <button class="toggle on" id="cPos" aria-pressed="true"><span>Positive Spiral Orbit (P&#8345;)</span><span class="sw"></span></button>
+      <button class="toggle on" id="cNeg" aria-pressed="true"><span>Negative Spiral Orbit (N&#8345;)</span><span class="sw"></span></button>
+      <button class="toggle on" id="cSquares" aria-pressed="true"><span>Paired Squares</span><span class="sw"></span></button>
+      <button class="toggle on" id="cPoints" aria-pressed="true"><span>Iteration Points</span><span class="sw"></span></button>
+      <button class="toggle on" id="cPath" aria-pressed="true"><span>Connecting Paths</span><span class="sw"></span></button>
+      <button class="toggle" id="cHypo" aria-pressed="false"><span>Hypotenuse Lines</span><span class="sw"></span></button>
+      <button class="toggle" id="cMid" aria-pressed="false"><span>Midpoint (M)</span><span class="sw"></span></button>
+      <button class="toggle on" id="cGrid" aria-pressed="true"><span>Lattice Grid</span><span class="sw"></span></button>
+      <button class="toggle" id="cLabels" aria-pressed="false"><span>n labels</span><span class="sw"></span></button>
     </div>
     <div class="grp" id="gKey">
       <div class="keytitle">Key</div>
@@ -143,7 +143,9 @@
     </div>
   </div>
   <div id="stage">
-    <button id="panelToggle" title="Hide panel" aria-label="Hide panel">&#9664;</button>
+    <button id="panelToggle" class="fab" title="Hide panel" aria-label="Hide panel">&#9664;</button>
+    <button id="btnTheme" class="fab" title="Dark mode" aria-label="Toggle dark mode"></button>
+    <button id="btnPng" class="fab" title="Save PNG"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 4l-1.6 2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3.4L15 4H9zm3 4.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zm0 2a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>Save PNG</button>
     <canvas id="cv"></canvas>
   </div>
 </div>
@@ -166,8 +168,7 @@ for (let n=-1;n>=-NMAX;n--){ p=cmul(p,INV); POW[n]=p; }
 const P = n => cmul(M12, csub([1,0], POW[n]));   // positive orbit
 const N = n => cmul(M12, POW[n]);                // negative orbit
 // paired-square corner offsets (unit base), scaled by (1+i)^n.
-// Square A and its point-reflection B through the iteration point.
-const BASE_POS = [[0,0],[-1,0],[-1,1],[0,1]];    // ordered around the square
+const BASE_POS = [[0,0],[-1,0],[-1,1],[0,1]];
 const BASE_NEG = [[0,0],[1,0],[1,-1],[0,-1]];
 function squarePair(center, n, base){
   const w = POW[n];
@@ -177,15 +178,12 @@ function squarePair(center, n, base){
 }
 const M = [-0.5,1];
 // ---------- Twindragon attractor of the backward IFS ----------
-// Backward maps from the paper: S^-1 = f1 (negative-orbit), T^-1 = f2 (positive-orbit).
 const F1 = z => cmul(z, INV);                 // z/(1+i),  fixed point 0  = P_0
 const TWO_I = [2,1];
 const F2 = z => cmul(csub(z, TWO_I), INV);    // (z-(2+i))/(1+i), fixed point -1+2i = N_0
 const DBX0=-2.45, DBX1=1.45, DBY0=-0.78, DBY1=2.78;   // padded attractor bounding box
 let dragon = null;
 function buildDragon(){
-  // Depth-d tiling: map the bounding square forward under both contractions.
-  // The union of images always covers the attractor; overhang shrinks as (1/sqrt2)^d.
   let polys = [[[DBX0,DBY0],[DBX1,DBY0],[DBX1,DBY1],[DBX0,DBY1]]];
   for(let d=0; d<13; d++){
     const nxt=[];
@@ -207,7 +205,6 @@ function buildDragon(){
   dragon={canvas:off};
 }
 buildDragon();
-// mini Twindragon silhouette for the key, recoloured to grey
 function renderDragonIcon(){
   const c=document.getElementById('dragonIcon');
   if(!c || !dragon) return;
@@ -217,7 +214,7 @@ function renderDragonIcon(){
   const s=Math.min(CW/dw, CH/dh)*0.96;
   const w=dw*s, h=dh*s;
   ic.drawImage(dragon.canvas, (CW-w)/2, (CH-h)/2, w, h);
-  ic.globalCompositeOperation='source-in';   // recolour the black silhouette to grey
+  ic.globalCompositeOperation='source-in';
   ic.fillStyle='#9a9a9a'; ic.fillRect(0,0,CW,CH);
   ic.globalCompositeOperation='source-over';
 }
@@ -229,7 +226,6 @@ function colors(){
     : { bg:'#ffffff', grid:'#dddddd', axis:'#aaaaaa', ink:'#000000', mono:'#000000' };
 }
 let THEME = colors();
-// recoloured Twindragon silhouettes, cached per colour (black for light, white for dark)
 const dragonTints = {};
 function getDragon(color){
   if(dragonTints[color]) return dragonTints[color];
@@ -245,7 +241,7 @@ function getDragon(color){
 // ---------- view transform ----------
 const cv = document.getElementById('cv');
 const ctx = cv.getContext('2d');
-let view = { scale: 24, ox: 0, oy: 0 };   // world->screen: sx = ox + x*scale ; sy = oy - y*scale
+let view = { scale: 24, ox: 0, oy: 0 };
 let DPR = window.devicePixelRatio || 1;
 function resize(){
   DPR = window.devicePixelRatio || 1;
@@ -259,15 +255,12 @@ const toS = pt => [view.ox + pt[0]*view.scale, view.oy - pt[1]*view.scale];
 // ---------- controls state ----------
 const ui = {};
 ['nRange'].forEach(id=>ui[id]=document.getElementById(id));
-const opt = id => document.getElementById(id).checked;
+const opt = id => { const e=document.getElementById(id); return !!e && e.classList.contains('on'); };
 function sVal(){ return +ui.nRange.value; }
 function nLo(){ return Math.min(0, sVal()); }
 function nHi(){ return Math.max(0, sVal()); }
 // ---------- fit ----------
-// Frame range for the auto-fit. Iterations 2 and below (all the way to -33) share the
-// n=2 frame, so stepping through the small and negative iterations holds a steady zoom
-// (and that frame also contains the whole Twindragon). For n >= 3 the view fits to the
-// points. The drawn range (nLo..nHi) is unchanged.
+// Iterations 2 and below (down to -33) share the n=2 frame for a steady zoom.
 function fitRange(){
   const s=sVal();
   if(s>=3) return [0, s];
@@ -298,7 +291,6 @@ function fit(){
   draw();
 }
 function savePng(){
-  // composite the canvas onto a solid background so the PNG isn't transparent
   const out=document.createElement('canvas');
   out.width=cv.width; out.height=cv.height;
   const o=out.getContext('2d');
@@ -310,14 +302,13 @@ function savePng(){
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
 }
 function zoomToM(){
-  const v=0; ui.nRange.value=v; document.getElementById('nVal').textContent='+0';   // start at iteration 0
+  const v=0; ui.nRange.value=v; document.getElementById('nVal').textContent='+0';
   view.scale = Math.min(W(),H())/6;
   view.ox = W()/2 - M[0]*view.scale;
   view.oy = H()/2 + M[1]*view.scale;
   draw();
 }
 function zoomToDragon(){
-  // step to the negative side so the attractor and the points landing on it are shown
   if(sVal()>=0){ const v=-16; ui.nRange.value=v; document.getElementById('nVal').textContent=v; }
   const pad=0.06, dx=DBX1-DBX0, dy=DBY1-DBY0;
   const s=Math.min(W()/(dx*(1+2*pad)), H()/(dy*(1+2*pad)));
@@ -329,7 +320,7 @@ function zoomToDragon(){
 // ---------- drawing ----------
 function drawGrid(){
   const s=view.scale;
-  if(s < 6) return;                          // too dense -> skip
+  if(s < 6) return;
   const x0 = Math.floor((-view.ox)/s);
   const x1 = Math.ceil((W()-view.ox)/s);
   const y0 = Math.floor((view.oy-H())/s);
@@ -339,7 +330,6 @@ function drawGrid(){
   for(let x=x0;x<=x1;x++){ const sx=view.ox+x*s; ctx.moveTo(sx,0); ctx.lineTo(sx,H()); }
   for(let y=y0;y<=y1;y++){ const sy=view.oy-y*s; ctx.moveTo(0,sy); ctx.lineTo(W(),sy); }
   ctx.stroke();
-  // axes a touch darker
   ctx.strokeStyle = THEME.axis; ctx.lineWidth = 1; ctx.beginPath();
   ctx.moveTo(view.ox,0); ctx.lineTo(view.ox,H());
   ctx.moveTo(0,view.oy); ctx.lineTo(W(),view.oy);
@@ -359,8 +349,6 @@ function drawSquares(orbitFn, base, lo, hi, color){
     }
   }
 }
-// Full hypotenuse line at each step, through the two outer leg-endpoints and drawn continuously across
-// the view. All positive-orbit lines pass through N0=(-1,2); all negative-orbit lines through P0=(0,0).
 function drawHypotenuse(orbitFn, offs, lo, hi, color){
   ctx.strokeStyle=color; ctx.lineWidth=1.2; ctx.setLineDash([]);
   const big=100000;
@@ -387,13 +375,12 @@ function drawPath(orbitFn, dashed, lo, hi, color){
   ctx.stroke();
   ctx.setLineDash([]);
 }
-// shared between the P and N label passes so they don't collide with each other
 let placedLabels=[];
 let placedPoints=[];
 const rectsOverlap=(a,b)=> !(a.x+a.w<b.x || b.x+b.w<a.x || a.y+a.h<b.y || b.y+b.h<a.y);
 function drawDragon(){
   if(!dragon) return;
-  const tl=toS([DBX0, DBY1]);                       // world top-left corner -> screen
+  const tl=toS([DBX0, DBY1]);
   const w=(DBX1-DBX0)*view.scale, h=(DBY1-DBY0)*view.scale;
   ctx.save();
   ctx.globalAlpha=0.16;
@@ -401,11 +388,9 @@ function drawDragon(){
   ctx.restore();
 }
 const outOfView = s => s[0]<-60||s[0]>W()+60||s[1]<-60||s[1]>H()+60;
-// candidate placement angles, tried in order; outward-from-M is rotated to angle 0
 const ANG_OFFSETS = [0,-38,38,-78,78,-120,120,162,180].map(d=>d*Math.PI/180);
 function drawPointsLabels(orbitFn, letter, lo, hi, color){
   const showPts=opt('cPoints'), showLab=opt('cLabels');
-  // collect on-screen points first (used both for dots and for label avoidance)
   const pts=[];
   for(let n=lo;n<=hi;n++){
     const s=toS(orbitFn(n));
@@ -423,13 +408,12 @@ function drawPointsLabels(orbitFn, letter, lo, hi, color){
   for(const p of pts){
     let dx=p.wp[0]-M[0], dy=p.wp[1]-M[1], len=Math.hypot(dx,dy);
     if(len<1e-6){ dx=0; dy=1; len=1; }
-    const baseAng=Math.atan2(-dy/len, dx/len);     // outward direction in screen space
-    // positive iterations: keep labels close to their points; n<=0: push just outside the (small) square
+    const baseAng=Math.atan2(-dy/len, dx/len);
     let R;
     if(p.n>0){
       R=17;
     } else {
-      const reach=Math.pow(Math.SQRT2, Math.abs(p.n)+1)*view.scale;   // square diagonal, in px
+      const reach=Math.pow(Math.SQRT2, Math.abs(p.n)+1)*view.scale;
       R=Math.max(16, Math.min(66, reach*0.85 + 12));
     }
     const sub=String(p.n);
@@ -444,14 +428,13 @@ function drawPointsLabels(orbitFn, letter, lo, hi, color){
       let clash=false;
       for(const r of placedLabels){ if(rectsOverlap(rect,r)){ clash=true; break; } }
       if(!clash){
-        // also avoid sitting on top of any other plotted point
         for(const q of placedPoints){
           if(q[0]>rect.x && q[0]<rect.x+rect.w && q[1]>rect.y && q[1]<rect.y+rect.h){ clash=true; break; }
         }
       }
       if(!clash){ best={rect, startX:cx-total/2, baseY:cy+4, lw}; break; }
     }
-    if(!best) continue;                             // skip rather than overlap
+    if(!best) continue;
     placedLabels.push(best.rect);
     ctx.font='italic 13px Arial'; ctx.fillText(letter, best.startX, best.baseY);
     ctx.font='9px Arial';         ctx.fillText(sub, best.startX+best.lw+0.5, best.baseY+3);
@@ -464,7 +447,7 @@ function drawM(){
   ctx.font='bold 12px Arial';
   ctx.fillText('M', s[0]+6, s[1]+1);
 }
-let clickPt=null;   // [x,y] integer lattice point selected by a click
+let clickPt=null;
 function drawClick(){
   if(!clickPt) return;
   const s=toS(clickPt);
@@ -476,8 +459,8 @@ function drawClick(){
   ctx.font='bold 12px Arial'; ctx.textBaseline='alphabetic';
   const w=ctx.measureText(txt).width;
   let lx=s[0]+10, ly=s[1]-10;
-  if(lx+w+4>W()) lx=s[0]-10-w;          // flip left near right edge
-  if(ly-12<4)    ly=s[1]+20;            // drop below near top edge
+  if(lx+w+4>W()) lx=s[0]-10-w;
+  if(ly-12<4)    ly=s[1]+20;
   ctx.fillStyle=THEME.bg; ctx.fillRect(lx-3, ly-13, w+6, 17);
   ctx.strokeStyle=THEME.ink; ctx.lineWidth=0.8; ctx.strokeRect(lx-3, ly-13, w+6, 17);
   ctx.fillStyle=THEME.ink; ctx.fillText(txt, lx, ly);
@@ -488,21 +471,21 @@ function draw(){
   const lo=nLo(), hi=nHi(), s=sVal();
   THEME = colors();
   const colorOn=opt('cColor');
-  const posCol = colorOn ? '#d01010' : THEME.mono;   // positive orbit -> red (mono uses the ink colour)
-  const negCol = colorOn ? '#0a3cdc' : THEME.mono;   // negative orbit -> blue (mono uses the ink colour)
+  const posCol = colorOn ? '#d01010' : THEME.mono;
+  const negCol = colorOn ? '#0a3cdc' : THEME.mono;
   const setC=(id,prop,val)=>{ const e=document.getElementById(id); if(e) e.style[prop]=val; };
   setC('lnPos','borderTopColor',posCol); setC('lnNeg','borderTopColor',negCol);
   setC('ptPos','background',posCol);     setC('ptNeg','background',negCol);
-  setC('sqPos','color',posCol);          setC('sqNeg','color',negCol);   // svg rects use currentColor
+  setC('sqPos','color',posCol);          setC('sqNeg','color',negCol);
   setC('hypPos','borderTopColor',posCol);setC('hypNeg','borderTopColor',negCol);
   if(opt('cGrid')) drawGrid();
-  if(opt('cDragon')) drawDragon();                              // attractor always shown; shrinks into the spiral at larger n
+  if(opt('cDragon')) drawDragon();
   if(opt('cHypo')){
     if(opt('cPos')) drawHypotenuse(P, [[1,0],[0,1]],   lo, hi, posCol);
     if(opt('cNeg')) drawHypotenuse(N, [[-1,0],[0,-1]], lo, hi, negCol);
   }
   if(opt('cSquares')){
-    if(opt('cPos')) drawSquares(P, BASE_POS, lo, hi, posCol);  // both orbits' squares drawn together across the swept range
+    if(opt('cPos')) drawSquares(P, BASE_POS, lo, hi, posCol);
     if(opt('cNeg')) drawSquares(N, BASE_NEG, lo, hi, negCol);
   }
   if(opt('cPath')){
@@ -532,13 +515,13 @@ window.addEventListener('mousemove',e=>{
   draw();
 });
 window.addEventListener('mouseup',e=>{
-  if(drag && !dragMoved){                           // a click (not a pan): snap to nearest lattice point
+  if(drag && !dragMoved){
     const r=cv.getBoundingClientRect();
     const mx=e.clientX-r.left, my=e.clientY-r.top;
     if(mx>=0 && my>=0 && mx<=r.width && my<=r.height){
       const gx=Math.round((mx-view.ox)/view.scale);
       const gy=Math.round((view.oy-my)/view.scale);
-      clickPt=(clickPt && clickPt[0]===gx && clickPt[1]===gy) ? null : [gx,gy];  // click it again to clear
+      clickPt=(clickPt && clickPt[0]===gx && clickPt[1]===gy) ? null : [gx,gy];
       draw();
     }
   }
@@ -548,7 +531,6 @@ cv.addEventListener('wheel',e=>{
   e.preventDefault();
   const r=cv.getBoundingClientRect();
   const mx=e.clientX-r.left, my=e.clientY-r.top;
-  // world point under cursor
   const wx=(mx-view.ox)/view.scale, wy=(view.oy-my)/view.scale;
   const f=Math.exp(-e.deltaY*0.0015);
   view.scale*=f;
@@ -556,7 +538,6 @@ cv.addEventListener('wheel',e=>{
   view.oy=my+wy*view.scale;
   draw();
 },{passive:false});
-// touch (basic pan + pinch)
 let touch=null;
 cv.addEventListener('touchstart',e=>{
   if(e.touches.length===1){const t=e.touches[0];touch={mode:'pan',x:t.clientX,y:t.clientY,ox:view.ox,oy:view.oy};}
@@ -580,8 +561,11 @@ cv.addEventListener('touchmove',e=>{
 },{passive:false});
 cv.addEventListener('touchend',()=>{touch=null;});
 // ---------- wire up ----------
-['cPos','cNeg','cSquares','cHypo','cPath','cLabels','cPoints','cMid','cGrid','cDragon','cColor'].forEach(id=>
-  document.getElementById(id).addEventListener('change',draw));
+document.querySelectorAll('.toggle').forEach(b=>b.addEventListener('click',()=>{
+  const on=b.classList.toggle('on');
+  b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  draw();
+}));
 function setN(v){
   v=Math.max(-33, Math.min(33, Math.round(v)));
   ui.nRange.value=v;
@@ -610,14 +594,17 @@ panelToggle.addEventListener('click',()=>{
   panelToggle.setAttribute('aria-label', panelToggle.title);
   resize();
 });
-// light / dark theme
+// light / dark theme (floating circle button, top-right of the graph)
 const btnTheme = document.getElementById('btnTheme');
-const MOON = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:5px" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
-const SUN = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:5px" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>';
+const MOON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const SUN = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>';
+btnTheme.innerHTML = MOON;
 btnTheme.addEventListener('click',()=>{
   dark=!dark;
   document.body.classList.toggle('dark', dark);
-  btnTheme.innerHTML = (dark?SUN:MOON) + (dark?'Light mode':'Dark mode');
+  btnTheme.innerHTML = dark ? SUN : MOON;
+  btnTheme.title = dark ? 'Light mode' : 'Dark mode';
+  btnTheme.setAttribute('aria-label', btnTheme.title);
   draw();
 });
 // init
