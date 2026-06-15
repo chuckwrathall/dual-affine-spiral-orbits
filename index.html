@@ -37,8 +37,6 @@
         .results { margin: 2rem 0; padding: 1.8rem; border: 1px solid #ddd; background: #f9f9f9; line-height: 1.85; }
         .results ul { margin-top: 1rem; padding-left: 1.4rem; list-style-type: disc; }
         .results ul li { margin-bottom: 0.9rem; }
-        .btn-link { font-size: 13px; padding: 7px 16px; border: 1px solid #ccc; border-radius: 6px; color: #333; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: background 0.2s, border-color 0.2s; }
-        .btn-link:hover { background: #f5f5f5; border-color: #aaa; }
         .cite-box { margin: 2rem 0; padding: 1.4rem 1.6rem; border: 1px solid #ddd; background: #f9f9f9; }
         .cite-box pre { margin: 0.8rem 0 0; padding: 1rem; background: #1e1e1e; color: #e8e8e8; border-radius: 6px; font-size: 12.5px; line-height: 1.6; overflow-x: auto; white-space: pre; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
         .cite-copy { font-size: 12px; padding: 5px 12px; border: 1px solid #ccc; border-radius: 6px; background: #fff; cursor: pointer; }
@@ -51,14 +49,14 @@
 
         /* ---------- top navigation bar ---------- */
         #site-nav { position: sticky; top: 0; z-index: 50; background: #fff; border-bottom: 1px solid #e7e5e4; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
-        .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; height: 60px; padding: 0 30px; }
-        .nav-tabs { display: flex; align-items: center; gap: 26px; }
-        .nav-tab { font-size: 14px; color: #57534e; text-decoration: none; padding: 4px 0; border-bottom: 2px solid transparent; white-space: nowrap; transition: color 0.15s ease, border-color 0.15s ease; }
-        .nav-tab:hover { color: #1c1917; }
-        .nav-tab.active { color: #1c1917; font-weight: 600; border-bottom-color: #d01010; }
-        .nav-current { display: none; font-size: 14px; font-weight: 600; color: #1c1917; }
-        .nav-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
-        .nav-pdf { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: #fff; background: #292524; border-radius: 7px; padding: 8px 15px; text-decoration: none; transition: background 0.15s ease; }
+        .nav-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; height: 64px; padding: 0 30px; }
+        .nav-logo { grid-column: 1; justify-self: start; display: inline-flex; align-items: center; }
+        .nav-logo svg { height: 40px; width: auto; display: block; }
+        .nav-seg { grid-column: 2; justify-self: center; display: flex; align-items: center; gap: 2px; background: #f3f1ee; border-radius: 999px; padding: 4px; }
+        .seg { font-size: 13px; color: #57534e; text-decoration: none; padding: 7px 14px; border-radius: 999px; white-space: nowrap; transition: background 0.15s ease, color 0.15s ease; }
+        .seg:hover { color: #1c1917; }
+        .seg.active { background: #fff; color: #1c1917; font-weight: 500; box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+        .nav-pdf { grid-column: 3; justify-self: end; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: #fff; background: #292524; border-radius: 7px; padding: 8px 15px; text-decoration: none; transition: background 0.15s ease; }
         .nav-pdf:hover { background: #000; }
         .nav-burger { display: none; background: none; border: 0; cursor: pointer; padding: 6px; color: #1c1917; line-height: 0; }
         .nav-mobile { display: none; border-top: 1px solid #eee; padding: 6px 0; }
@@ -66,7 +64,7 @@
         .nav-mobile a:hover { background: #faf9f8; }
         .nav-mobile a.active { color: #1c1917; font-weight: 600; border-left-color: #d01010; background: #faf9f8; }
         #site-nav.menu-open .nav-mobile { display: block; }
-        #model, #abstract, #contact { scroll-margin-top: 78px; }
+        #model, #abstract, #contact { scroll-margin-top: 82px; }
 
         /* ---------- contact section ---------- */
         .contact { margin: 2rem 0; padding: 1.8rem; border: 1px solid #ddd; background: #f9f9f9; }
@@ -77,13 +75,12 @@
         .contact-row a { color: #333; text-decoration: none; border-bottom: 1px solid #ddd; }
         .contact-row a:hover { color: #000; border-bottom-color: #999; }
 
-        @media (max-width: 720px) {
-            .nav-tabs { display: none; }
-            .nav-current { display: block; }
-            .nav-burger { display: block; }
-            .nav-inner { height: 54px; padding: 0 18px; }
+        @media (max-width: 820px) {
+            .nav-seg { display: none; }
+            .nav-pdf { grid-column: 2; justify-self: center; padding: 7px 11px; }
             .nav-pdf .nav-pdf-long { display: none; }
-            .nav-pdf { padding: 7px 11px; }
+            .nav-burger { display: inline-flex; align-items: center; justify-content: center; grid-column: 3; justify-self: end; }
+            .nav-inner { height: 56px; padding: 0 18px; }
         }
 
         /* ---------- full-screen 2D model overlay ---------- */
@@ -106,26 +103,37 @@
     <!-- TOP NAVIGATION -->
     <nav id="site-nav">
         <div class="nav-inner">
-            <span class="nav-current">2D Model</span>
-            <div class="nav-tabs">
-                <a href="#model" class="nav-tab" data-target="model">2D Model</a>
-                <a href="#abstract" class="nav-tab" data-target="abstract">Abstract</a>
+            <a href="#" class="nav-logo" aria-label="Back to top">
+                <svg viewBox="0 0 360 460" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <g fill="none" stroke-width="6" stroke-linejoin="miter">
+                        <rect x="30" y="30" width="100" height="100" stroke="#0a3cdc"/>
+                        <rect x="130" y="130" width="100" height="100" stroke="#0a3cdc"/>
+                        <rect x="130" y="230" width="100" height="100" stroke="#d01010"/>
+                        <rect x="230" y="330" width="100" height="100" stroke="#d01010"/>
+                    </g>
+                    <line x1="130" y1="230" x2="230" y2="230" stroke="#6d2676" stroke-width="6"/>
+                    <circle cx="130" cy="130" r="10" fill="#0a3cdc"/>
+                    <circle cx="230" cy="330" r="10" fill="#d01010"/>
+                    <circle cx="180" cy="230" r="10" fill="#6d2676"/>
+                </svg>
+            </a>
+            <div class="nav-seg">
+                <a href="#model" class="seg" data-target="model">2D Model</a>
+                <a href="#abstract" class="seg" data-target="abstract">Abstract</a>
                 <!-- arXiv: submitted as submit/7693769 (private tracking number, not a public link).
                      When arXiv announces the paper and assigns a public ID (e.g. 2506.NNNNN), replace
                      XXXX.XXXXX below with it. Until then the link shows a "coming soon" toast. -->
-                <a href="https://arxiv.org/abs/XXXX.XXXXX" class="nav-tab" target="_blank" rel="noopener">arXiv</a>
-                <a href="https://oeis.org/A396151" class="nav-tab" target="_blank" rel="noopener">OEIS</a>
-                <a href="#contact" class="nav-tab" data-target="contact">Contact</a>
+                <a href="https://arxiv.org/abs/XXXX.XXXXX" class="seg" target="_blank" rel="noopener">arXiv</a>
+                <a href="https://oeis.org/A396151" class="seg" target="_blank" rel="noopener">OEIS</a>
+                <a href="#contact" class="seg" data-target="contact">Contact</a>
             </div>
-            <div class="nav-right">
-                <a href="paper.pdf" class="nav-pdf" target="_blank" rel="noopener">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3a1 1 0 0 1 1 1v8.59l2.3-2.3a1 1 0 1 1 1.4 1.42l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.42l2.3 2.3V4a1 1 0 0 1 1-1zM5 18a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1z"/></svg>
-                    <span class="nav-pdf-long">Download&nbsp;</span>PDF
-                </a>
-                <button class="nav-burger" aria-label="Open menu" aria-expanded="false">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-                </button>
-            </div>
+            <a href="paper.pdf" class="nav-pdf" target="_blank" rel="noopener">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3a1 1 0 0 1 1 1v8.59l2.3-2.3a1 1 0 1 1 1.4 1.42l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.42l2.3 2.3V4a1 1 0 0 1 1-1zM5 18a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1z"/></svg>
+                <span class="nav-pdf-long">Download&nbsp;</span>PDF
+            </a>
+            <button class="nav-burger" aria-label="Open menu" aria-expanded="false">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
         </div>
         <div class="nav-mobile">
             <a href="#model" data-target="model">2D Model</a>
@@ -242,23 +250,20 @@
         window.addEventListener('load', () => {
             if (typeof MathJax !== "undefined") MathJax.typesetPromise().catch(err => console.error(err));
         });
-        // ---------- top nav: scroll-spy + mobile menu ----------
+        // ---------- top nav: scroll-spy, mobile menu, logo, full-screen model ----------
         (function(){
             const nav = document.getElementById('site-nav');
             if(!nav) return;
-            const allTabs = nav.querySelectorAll('.nav-tab[data-target], .nav-mobile a[data-target]');
-            const navCurrent = nav.querySelector('.nav-current');
-            const labels = { model: '2D Model', abstract: 'Abstract', contact: 'Contact' };
+            const allTabs = nav.querySelectorAll('.seg[data-target], .nav-mobile a[data-target]');
             function setActive(id){
                 allTabs.forEach(t => t.classList.toggle('active', t.dataset.target === id));
-                if(navCurrent && labels[id]) navCurrent.textContent = labels[id];
             }
             const ids = ['model', 'abstract', 'contact'];
             const sections = ids.map(i => document.getElementById(i)).filter(Boolean);
             if('IntersectionObserver' in window){
                 const obs = new IntersectionObserver(entries => {
                     entries.forEach(e => { if(e.isIntersecting) setActive(e.target.id); });
-                }, { rootMargin: '-78px 0px -68% 0px', threshold: 0 });
+                }, { rootMargin: '-82px 0px -68% 0px', threshold: 0 });
                 sections.forEach(s => obs.observe(s));
             }
             const burger = nav.querySelector('.nav-burger');
@@ -272,8 +277,15 @@
                 nav.classList.remove('menu-open');
                 if(burger) burger.setAttribute('aria-expanded', 'false');
             }));
+            // logo -> smooth scroll to top
+            const navLogo = nav.querySelector('.nav-logo');
+            if(navLogo) navLogo.addEventListener('click', e => {
+                e.preventDefault();
+                nav.classList.remove('menu-open');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
 
-            // full-screen 2D model overlay (opened by the "2D Model" tab)
+            // full-screen 2D model overlay (opened by the "2D Model" item)
             const fsOverlay = document.getElementById('model-fs');
             const fsFrame = fsOverlay && fsOverlay.querySelector('.model-fs-frame');
             const fsBack = fsOverlay && fsOverlay.querySelector('.model-fs-back');
