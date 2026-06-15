@@ -298,7 +298,7 @@ function fit(){
   draw();
 }
 function savePng(){
-  // composite the canvas onto a white background so the PNG isn't transparent
+  // composite the canvas onto a solid background so the PNG isn't transparent
   const out=document.createElement('canvas');
   out.width=cv.width; out.height=cv.height;
   const o=out.getContext('2d');
