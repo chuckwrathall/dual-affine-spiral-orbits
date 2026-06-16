@@ -18,13 +18,16 @@
   h1 { font-size: 15px; margin: 0 0 12px; }
   .grp { border-top: 1px solid #000; padding: 12px 0 4px; }
   .grp:first-of-type { border-top: none; padding-top: 4px; }
-  .rlabel { font-size: 12px; display: flex; justify-content: space-between; margin: 12px 0 5px; }
+  .rlabel { font-size: 12px; font-weight: 700; display: flex; justify-content: center; gap: 6px; margin: 12px 0 6px; }
   input[type=range] { width: 100%; accent-color: #000; }
   .srow { display: flex; align-items: center; gap: 8px; }
   .srow input[type=range] { flex: 1; }
-  .hint { font-size: 10.5px; color: #000; line-height: 1.5; margin-top: 8px; }
   #readout { font-size: 11px; color: #000; line-height: 1.5; }
-  .keytitle { font-size: 12px; font-weight: bold; margin: 2px 0 6px; }
+  .keytitle { font-size: 12px; font-weight: bold; margin: 2px 0 6px; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px; background: none; border: 0; padding: 0; color: inherit; cursor: pointer; font-family: Arial; }
+  .key-chevron { flex: 0 0 auto; transition: transform .2s ease; }
+  #gKey.collapsed .keytitle { margin-bottom: 0; }
+  #gKey.collapsed .key { display: none; }
+  #gKey.collapsed .key-chevron { transform: rotate(-90deg); }
   .key { font-size: 11px; }
   .key > div { display: flex; align-items: center; margin: 4px 0; }
   .mk { flex: 0 0 22px; margin-right: 8px; text-align: center; line-height: 0; }
@@ -35,6 +38,595 @@
   code { font-family: Arial; }
 
   /* pill action buttons */
+  .pill { font-family: Arial; font-size: 12px; border: 1px solid #000; background: #fff; color: #000; border-radius: 999px; padding: 8px 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 7px; transition: background .15s, color .15s, border-color .15s; }
+  .pill:hover { background: #000; color: #fff; }
+  .pill svg { display: block; }
+  .pill-block { display: flex; width: 100%; margin: 0 0 8px; }
+  .pill-round { width: 36px; height: 36px; padding: 0; flex: 0 0 auto; font-size: 12px; }
+
+  /* toggle pills */
+  .toggle { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px; font-family: Arial; font-size: 12px; text-align: left; border: 1px solid #cfcac4; background: #fff; color: #7a756f; border-radius: 999px; padding: 7px 8px 7px 14px; cursor: pointer; margin: 0 0 6px; transition: color .15s, border-color .15s; }
+  .toggle:hover { border-color: #000; }
+  .toggle.on { color: #000; border-color: #000; }
+  .toggle .sw { width: 30px; height: 17px; border-radius: 999px; background: #d3cfc9; position: relative; flex: 0 0 auto; transition: background .15s; }
+  .toggle .sw::after { content: ''; position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; transition: left .15s; }
+  .toggle.on .sw { background: #000; }
+  .toggle.on .sw::after { left: 15px; }
+
+  /* floating buttons over the graph */
+  .fab { position: absolute; z-index: 20; background: #fff; border: 1px solid #000; color: #000; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-family: Arial; font-size: 12px; box-shadow: 0 2px 6px rgba(0,0,0,.12); transition: background .15s, color .15s; }
+  .fab:hover { background: #000; color: #fff; }
+  .fab svg { display: block; }
+  #panelToggle { top: 10px; left: 10px; width: 34px; height: 34px; border-radius: 50%; padding: 0; }
+  #panelToggle svg { transition: transform .2s ease; }
+  #app.panel-collapsed #panelToggle svg { transform: rotate(180deg); }
+  #btnTheme { top: 10px; right: 10px; width: 38px; height: 38px; border-radius: 50%; padding: 0; }
+  #btnPng { left: 10px; bottom: 10px; border-radius: 999px; padding: 8px 14px; }
+  #app.panel-collapsed #panel { display: none; }
+
+  /* dark mode */
+  body.dark { background: #0b0b0b; color: #fff; }
+  body.dark #panel { background: #0b0b0b; border-right-color: #444; }
+  body.dark canvas { background: #0b0b0b; }
+  body.dark .grp { border-top-color: #444; }
+  body.dark #readout, body.dark .keytitle, body.dark .key { color: #fff; }
+  body.dark input[type=range] { accent-color: #fff; }
+  body.dark .pill { border-color: #666; background: #0b0b0b; color: #fff; }
+  body.dark .pill:hover { background: #fff; color: #000; }
+  body.dark .toggle { border-color: #444; background: #0b0b0b; color: #8a857f; }
+  body.dark .toggle:hover { border-color: #fff; }
+  body.dark .toggle.on { color: #fff; border-color: #fff; }
+  body.dark .toggle .sw { background: #555; }
+  body.dark .toggle .sw::after { background: #0b0b0b; }
+  body.dark .toggle.on .sw { background: #fff; }
+  body.dark .dt { background: #fff; }
+  body.dark .ln { border-top-color: #fff; }
+  body.dark .fab { background: #1a1a1a; border-color: #666; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.5); }
+  body.dark .fab:hover { background: #fff; color: #000; }
+
+  /* narrow screens / phones */
+  @media (max-width: 700px) {
+    #app { flex-direction: column; }
+    #panel {
+      width: 100%; min-width: 0; height: auto; max-height: 50vh; overflow-y: auto;
+      border-right: none; border-bottom: 1px solid #000; padding: 12px 16px;
+    }
+    body.dark #panel { border-bottom-color: #444; }
+    #stage { min-height: 0; }
+    #gToggles { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; }
+    #gToggles .toggle { margin: 0; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="panel">
+    <h1>Dual Affine Spiral Orbits on Z&sup2;<br>Interactive 2D Model</h1>
+    <div class="grp" id="gControls">
+      <button class="pill pill-block" id="btnDragon">Twindragon Spirals View</button>
+      <button class="pill pill-block" id="btnM">Base Iteration (P&#8320;, M, N&#8320;)</button>
+      <button class="pill pill-block" id="btnForward">Dual Affine Spirals Full View</button>
+      <div class="rlabel"><span>Iteration n</span><span id="nVal">+9</span></div>
+      <div class="srow">
+        <button id="nDec" class="pill pill-round" title="One iteration back (←)"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15 5l-7 7 7 7z"/></svg></button>
+        <input type="range" id="nRange" min="-33" max="33" value="9" step="1">
+        <button id="nInc" class="pill pill-round" title="One iteration forward (→)"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 5l7 7-7 7z"/></svg></button>
+      </div>
+    </div>
+    <div class="grp" id="gToggles">
+      <button class="toggle on" id="cDragon" aria-pressed="true"><span>Twindragon Overlay</span><span class="sw"></span></button>
+      <button class="toggle on" id="cColor" aria-pressed="true"><span>Colour Orbits (P=red / N=blue)</span><span class="sw"></span></button>
+      <button class="toggle on" id="cPos" aria-pressed="true"><span>Positive Spiral Orbit (P&#8345;)</span><span class="sw"></span></button>
+      <button class="toggle on" id="cNeg" aria-pressed="true"><span>Negative Spiral Orbit (N&#8345;)</span><span class="sw"></span></button>
+      <button class="toggle on" id="cSquares" aria-pressed="true"><span>Paired Squares</span><span class="sw"></span></button>
+      <button class="toggle on" id="cPoints" aria-pressed="true"><span>Iteration Points</span><span class="sw"></span></button>
+      <button class="toggle on" id="cPath" aria-pressed="true"><span>Connecting Paths</span><span class="sw"></span></button>
+      <button class="toggle" id="cHypo" aria-pressed="false"><span>Hypotenuse Lines</span><span class="sw"></span></button>
+      <button class="toggle" id="cMid" aria-pressed="false"><span>Midpoint (M)</span><span class="sw"></span></button>
+      <button class="toggle on" id="cGrid" aria-pressed="true"><span>Lattice Grid</span><span class="sw"></span></button>
+      <button class="toggle" id="cLabels" aria-pressed="false"><span>n labels</span><span class="sw"></span></button>
+    </div>
+    <div class="grp" id="gKey">
+      <button class="keytitle" id="keyToggle" type="button" aria-expanded="true">Legend<svg class="key-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+      <div class="key">
+        <div><span class="mk"><span class="ln" id="lnPos"></span></span>Positive orbit path</div>
+        <div><span class="mk"><span class="dt" id="ptPos"></span></span>Positive iteration points (P<sub>n</sub>)</div>
+        <div><span class="mk"><svg class="ic" id="sqPos" viewBox="0 0 20 16" width="22" height="16"><rect x="1.4" y="1.4" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.3"/><rect x="8.4" y="8.4" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></span>Positive paired squares</div>
+        <div><span class="mk"><span class="ln" id="lnNeg"></span></span>Negative orbit path</div>
+        <div><span class="mk"><span class="dt" id="ptNeg"></span></span>Negative iteration points (N<sub>n</sub>)</div>
+        <div><span class="mk"><svg class="ic" id="sqNeg" viewBox="0 0 20 16" width="22" height="16"><rect x="1.4" y="1.4" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.3"/><rect x="8.4" y="8.4" width="7" height="7" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></span>Negative paired squares</div>
+        <div><span class="mk"><span class="ln" id="hypPos" style="border-top-style:solid"></span></span>Positive hypotenuse lines (meet at (&minus;1,2))</div>
+        <div><span class="mk"><span class="ln" id="hypNeg" style="border-top-style:solid"></span></span>Negative hypotenuse lines (meet at (0,0))</div>
+        <div><span class="mk"><span class="dt"></span></span>Midpoint M (center of symmetry)</div>
+        <div><span class="mk"><canvas id="dragonIcon" width="48" height="32"></canvas></span>Twindragon attractor</div>
+        <div><span class="mk"><svg class="ic" viewBox="0 0 14 14" width="14" height="14"><rect x="0.5" y="0.5" width="13" height="13" fill="#fff" stroke="#bbb"/><line x1="5" y1="0.5" x2="5" y2="13.5" stroke="#ddd"/><line x1="9.5" y1="0.5" x2="9.5" y2="13.5" stroke="#ddd"/><line x1="0.5" y1="5" x2="13.5" y2="5" stroke="#ddd"/><line x1="0.5" y1="9.5" x2="13.5" y2="9.5" stroke="#ddd"/></svg></span>Integer lattice Z&sup2;</div>
+      </div>
+    </div>
+    <div class="grp">
+      <div id="readout"></div>
+    </div>
+  </div>
+  <div id="stage">
+    <button id="panelToggle" class="fab" title="Hide panel" aria-label="Hide panel"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15 5l-7 7 7 7z"/></svg></button>
+    <button id="btnTheme" class="fab" title="Dark mode" aria-label="Toggle dark mode"></button>
+    <button id="btnPng" class="fab" title="Save PNG"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 4l-1.6 2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3.4L15 4H9zm3 4.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zm0 2a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>Save PNG</button>
+    <canvas id="cv"></canvas>
+  </div>
+</div>
+<script>
+"use strict";
+// ---------- complex helpers ----------
+const cmul = (a,b)=>[a[0]*b[0]-a[1]*b[1], a[0]*b[1]+a[1]*b[0]];
+const cadd = (a,b)=>[a[0]+b[0], a[1]+b[1]];
+const csub = (a,b)=>[a[0]-b[0], a[1]-b[1]];
+const NMAX = 33;
+const ONE_PLUS_I = [1,1];
+const INV = [0.5,-0.5];      // 1/(1+i)
+const M12 = [-1,2];          // -1 + 2i
+// powers (1+i)^n for n = -NMAX..NMAX
+const POW = {};
+let p = [1,0];
+for (let n=0;n<=NMAX;n++){ POW[n]=p; p=cmul(p,ONE_PLUS_I); }
+p=[1,0];
+for (let n=-1;n>=-NMAX;n--){ p=cmul(p,INV); POW[n]=p; }
+const P = n => cmul(M12, csub([1,0], POW[n]));   // positive orbit
+const N = n => cmul(M12, POW[n]);                // negative orbit
+// paired-square corner offsets (unit base), scaled by (1+i)^n.
+const BASE_POS = [[0,0],[-1,0],[-1,1],[0,1]];
+const BASE_NEG = [[0,0],[1,0],[1,-1],[0,-1]];
+function squarePair(center, n, base){
+  const w = POW[n];
+  const A = base.map(o=>cadd(center, cmul(w,o)));
+  const B = base.map(o=>csub(center, cmul(w,o)));
+  return [A,B];
+}
+const M = [-0.5,1];
+// ---------- Twindragon attractor of the backward IFS ----------
+const F1 = z => cmul(z, INV);                 // z/(1+i),  fixed point 0  = P_0
+const TWO_I = [2,1];
+const F2 = z => cmul(csub(z, TWO_I), INV);    // (z-(2+i))/(1+i), fixed point -1+2i = N_0
+const DBX0=-2.45, DBX1=1.45, DBY0=-0.78, DBY1=2.78;   // padded attractor bounding box
+let dragon = null;
+function buildDragon(){
+  let polys = [[[DBX0,DBY0],[DBX1,DBY0],[DBX1,DBY1],[DBX0,DBY1]]];
+  for(let d=0; d<13; d++){
+    const nxt=[];
+    for(const poly of polys){ nxt.push(poly.map(F1)); nxt.push(poly.map(F2)); }
+    polys=nxt;
+  }
+  const RW=780, RH=Math.round(RW*(DBY1-DBY0)/(DBX1-DBX0));
+  const off=document.createElement('canvas'); off.width=RW; off.height=RH;
+  const o=off.getContext('2d');
+  const sx=RW/(DBX1-DBX0), sy=RH/(DBY1-DBY0);
+  const toImg=p=>[ (p[0]-DBX0)*sx, (DBY1-p[1])*sy ];
+  o.fillStyle='#000';
+  for(const poly of polys){
+    o.beginPath();
+    const a=toImg(poly[0]); o.moveTo(a[0],a[1]);
+    for(let k=1;k<poly.length;k++){ const b=toImg(poly[k]); o.lineTo(b[0],b[1]); }
+    o.closePath(); o.fill();
+  }
+  dragon={canvas:off};
+}
+buildDragon();
+function renderDragonIcon(){
+  const c=document.getElementById('dragonIcon');
+  if(!c || !dragon) return;
+  const ic=c.getContext('2d'), CW=c.width, CH=c.height;
+  ic.clearRect(0,0,CW,CH);
+  const dw=dragon.canvas.width, dh=dragon.canvas.height;
+  const s=Math.min(CW/dw, CH/dh)*0.96;
+  const w=dw*s, h=dh*s;
+  ic.drawImage(dragon.canvas, (CW-w)/2, (CH-h)/2, w, h);
+  ic.globalCompositeOperation='source-in';
+  ic.fillStyle='#9a9a9a'; ic.fillRect(0,0,CW,CH);
+  ic.globalCompositeOperation='source-over';
+}
+// ---------- theme (light / dark) ----------
+let dark = false;
+function colors(){
+  return dark
+    ? { bg:'#0b0b0b', grid:'#2a2a2a', axis:'#555555', ink:'#ffffff', mono:'#ffffff' }
+    : { bg:'#ffffff', grid:'#dddddd', axis:'#aaaaaa', ink:'#000000', mono:'#000000' };
+}
+let THEME = colors();
+const dragonTints = {};
+function getDragon(color){
+  if(dragonTints[color]) return dragonTints[color];
+  const src = dragon.canvas;
+  const t = document.createElement('canvas'); t.width = src.width; t.height = src.height;
+  const tc = t.getContext('2d');
+  tc.drawImage(src, 0, 0);
+  tc.globalCompositeOperation = 'source-in';
+  tc.fillStyle = color; tc.fillRect(0, 0, t.width, t.height);
+  dragonTints[color] = t;
+  return t;
+}
+// ---------- view transform ----------
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+let view = { scale: 24, ox: 0, oy: 0 };
+let DPR = window.devicePixelRatio || 1;
+function resize(){
+  DPR = window.devicePixelRatio || 1;
+  const r = cv.getBoundingClientRect();
+  cv.width = Math.round(r.width*DPR);
+  cv.height = Math.round(r.height*DPR);
+  draw();
+}
+const W = ()=>cv.width/DPR, H = ()=>cv.height/DPR;
+const toS = pt => [view.ox + pt[0]*view.scale, view.oy - pt[1]*view.scale];
+// ---------- controls state ----------
+const ui = {};
+['nRange'].forEach(id=>ui[id]=document.getElementById(id));
+const opt = id => { const e=document.getElementById(id); return !!e && e.classList.contains('on'); };
+function sVal(){ return +ui.nRange.value; }
+function nLo(){ return Math.min(0, sVal()); }
+function nHi(){ return Math.max(0, sVal()); }
+// ---------- fit ----------
+// Iterations 2 and below (down to -33) share the n=2 frame for a steady zoom.
+function fitRange(){
+  const s=sVal();
+  if(s>=3) return [0, s];
+  return [Math.min(s,0), 2];
+}
+function visiblePoints(){
+  const [lo,hi]=fitRange(); const pts=[];
+  for(let n=lo;n<=hi;n++){
+    if(opt('cPos')) pts.push(P(n));
+    if(opt('cNeg')) pts.push(N(n));
+  }
+  if(opt('cMid')) pts.push(M);
+  return pts;
+}
+function fit(){
+  const pts = visiblePoints();
+  if(!pts.length) return;
+  let minx=1e18,maxx=-1e18,miny=1e18,maxy=-1e18;
+  for(const [x,y] of pts){ minx=Math.min(minx,x);maxx=Math.max(maxx,x);miny=Math.min(miny,y);maxy=Math.max(maxy,y);}
+  const pad=0.08;
+  let dx=(maxx-minx)||1, dy=(maxy-miny)||1;
+  minx-=dx*pad;maxx+=dx*pad;miny-=dy*pad;maxy+=dy*pad;
+  dx=maxx-minx; dy=maxy-miny;
+  const s = Math.min(W()/dx, H()/dy);
+  view.scale = s;
+  view.ox = (W() - (minx+maxx)*s)/2;
+  view.oy = (H() + (miny+maxy)*s)/2;
+  draw();
+}
+function savePng(){
+  const out=document.createElement('canvas');
+  out.width=cv.width; out.height=cv.height;
+  const o=out.getContext('2d');
+  o.fillStyle=THEME.bg; o.fillRect(0,0,out.width,out.height);
+  o.drawImage(cv,0,0);
+  const a=document.createElement('a');
+  a.href=out.toDataURL('image/png');
+  a.download='dual-spiral-n'+sVal()+'.png';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+function zoomToM(){
+  const v=0; ui.nRange.value=v; document.getElementById('nVal').textContent='+0';
+  view.scale = Math.min(W(),H())/6;
+  view.ox = W()/2 - M[0]*view.scale;
+  view.oy = H()/2 + M[1]*view.scale;
+  draw();
+}
+function zoomToDragon(){
+  if(sVal()>=0){ const v=-16; ui.nRange.value=v; document.getElementById('nVal').textContent=v; }
+  const pad=0.06, dx=DBX1-DBX0, dy=DBY1-DBY0;
+  const s=Math.min(W()/(dx*(1+2*pad)), H()/(dy*(1+2*pad)));
+  view.scale=s;
+  view.ox=(W()-(DBX0+DBX1)*s)/2;
+  view.oy=(H()+(DBY0+DBY1)*s)/2;
+  draw();
+}
+// ---------- drawing ----------
+function drawGrid(){
+  const s=view.scale;
+  if(s < 6) return;
+  const x0 = Math.floor((-view.ox)/s);
+  const x1 = Math.ceil((W()-view.ox)/s);
+  const y0 = Math.floor((view.oy-H())/s);
+  const y1 = Math.ceil((view.oy)/s);
+  ctx.strokeStyle = THEME.grid; ctx.lineWidth = 1;
+  ctx.beginPath();
+  for(let x=x0;x<=x1;x++){ const sx=view.ox+x*s; ctx.moveTo(sx,0); ctx.lineTo(sx,H()); }
+  for(let y=y0;y<=y1;y++){ const sy=view.oy-y*s; ctx.moveTo(0,sy); ctx.lineTo(W(),sy); }
+  ctx.stroke();
+  ctx.strokeStyle = THEME.axis; ctx.lineWidth = 1; ctx.beginPath();
+  ctx.moveTo(view.ox,0); ctx.lineTo(view.ox,H());
+  ctx.moveTo(0,view.oy); ctx.lineTo(W(),view.oy);
+  ctx.stroke();
+}
+function drawSquares(orbitFn, base, lo, hi, color){
+  ctx.strokeStyle=color; ctx.lineWidth=1;
+  for(let n=lo;n<=hi;n++){
+    const c=orbitFn(n);
+    const [A,B]=squarePair(c,n,base);
+    for(const sq of [A,B]){
+      ctx.beginPath();
+      const p0=toS(sq[0]); ctx.moveTo(p0[0],p0[1]);
+      for(let k=1;k<sq.length;k++){const q=toS(sq[k]);ctx.lineTo(q[0],q[1]);}
+      ctx.closePath();
+      ctx.stroke();
+    }
+  }
+}
+function drawHypotenuse(orbitFn, offs, lo, hi, color){
+  ctx.strokeStyle=color; ctx.lineWidth=1.2; ctx.setLineDash([]);
+  const big=100000;
+  for(let n=lo;n<=hi;n++){
+    const c=orbitFn(n), w=POW[n];
+    const A=toS(cadd(c, cmul(w, offs[0])));
+    const B=toS(cadd(c, cmul(w, offs[1])));
+    let dx=B[0]-A[0], dy=B[1]-A[1]; const L=Math.hypot(dx,dy); if(L<1e-9) continue;
+    dx/=L; dy/=L;
+    ctx.beginPath();
+    ctx.moveTo(A[0]-dx*big, A[1]-dy*big);
+    ctx.lineTo(A[0]+dx*big, A[1]+dy*big);
+    ctx.stroke();
+  }
+}
+function drawPath(orbitFn, dashed, lo, hi, color){
+  ctx.strokeStyle=color; ctx.lineWidth=1.4;
+  ctx.setLineDash(dashed?[5,4]:[]);
+  ctx.beginPath();
+  for(let n=lo;n<=hi;n++){
+    const s=toS(orbitFn(n));
+    if(n===lo) ctx.moveTo(s[0],s[1]); else ctx.lineTo(s[0],s[1]);
+  }
+  ctx.stroke();
+  ctx.setLineDash([]);
+}
+let placedLabels=[];
+let placedPoints=[];
+const rectsOverlap=(a,b)=> !(a.x+a.w<b.x || b.x+b.w<a.x || a.y+a.h<b.y || b.y+b.h<a.y);
+function drawDragon(){
+  if(!dragon) return;
+  const tl=toS([DBX0, DBY1]);
+  const w=(DBX1-DBX0)*view.scale, h=(DBY1-DBY0)*view.scale;
+  ctx.save();
+  ctx.globalAlpha=0.16;
+  ctx.drawImage(getDragon(THEME.ink), tl[0], tl[1], w, h);
+  ctx.restore();
+}
+const outOfView = s => s[0]<-60||s[0]>W()+60||s[1]<-60||s[1]>H()+60;
+const ANG_OFFSETS = [0,-38,38,-78,78,-120,120,162,180].map(d=>d*Math.PI/180);
+function drawPointsLabels(orbitFn, letter, lo, hi, color){
+  const showPts=opt('cPoints'), showLab=opt('cLabels');
+  const pts=[];
+  for(let n=lo;n<=hi;n++){
+    const s=toS(orbitFn(n));
+    if(outOfView(s)) continue;
+    pts.push({n, s, wp:orbitFn(n)});
+  }
+  if(showPts){
+    ctx.fillStyle=color;
+    for(const p of pts){ ctx.beginPath(); ctx.arc(p.s[0],p.s[1],2.6,0,7); ctx.fill(); }
+    placedPoints.push(...pts.map(p=>p.s));
+  }
+  if(!showLab) return;
+  const hgt=15;
+  ctx.fillStyle=color; ctx.textBaseline='alphabetic';
+  for(const p of pts){
+    let dx=p.wp[0]-M[0], dy=p.wp[1]-M[1], len=Math.hypot(dx,dy);
+    if(len<1e-6){ dx=0; dy=1; len=1; }
+    const baseAng=Math.atan2(-dy/len, dx/len);
+    let R;
+    if(p.n>0){
+      R=17;
+    } else {
+      const reach=Math.pow(Math.SQRT2, Math.abs(p.n)+1)*view.scale;
+      R=Math.max(16, Math.min(66, reach*0.85 + 12));
+    }
+    const sub=String(p.n);
+    ctx.font='italic 13px Arial'; const lw=ctx.measureText(letter).width;
+    ctx.font='9px Arial';         const sw=ctx.measureText(sub).width;
+    const total=lw+sw;
+    let best=null;
+    for(const ao of ANG_OFFSETS){
+      const ang=baseAng+ao;
+      const cx=p.s[0]+Math.cos(ang)*R, cy=p.s[1]+Math.sin(ang)*R;
+      const rect={x:cx-total/2-1, y:cy-hgt/2-1, w:total+2, h:hgt+2};
+      let clash=false;
+      for(const r of placedLabels){ if(rectsOverlap(rect,r)){ clash=true; break; } }
+      if(!clash){
+        for(const q of placedPoints){
+          if(q[0]>rect.x && q[0]<rect.x+rect.w && q[1]>rect.y && q[1]<rect.y+rect.h){ clash=true; break; }
+        }
+      }
+      if(!clash){ best={rect, startX:cx-total/2, baseY:cy+4, lw}; break; }
+    }
+    if(!best) continue;
+    placedLabels.push(best.rect);
+    ctx.font='italic 13px Arial'; ctx.fillText(letter, best.startX, best.baseY);
+    ctx.font='9px Arial';         ctx.fillText(sub, best.startX+best.lw+0.5, best.baseY+3);
+  }
+}
+function drawM(){
+  const s=toS(M);
+  ctx.fillStyle=THEME.ink;
+  ctx.beginPath(); ctx.arc(s[0],s[1],2.6,0,7); ctx.fill();
+  ctx.font='bold 12px Arial';
+  ctx.fillText('M', s[0]+6, s[1]+1);
+}
+let clickPt=null;
+function drawClick(){
+  if(!clickPt) return;
+  const s=toS(clickPt);
+  if(s[0]<-50||s[0]>W()+50||s[1]<-50||s[1]>H()+50) return;
+  ctx.strokeStyle=THEME.ink; ctx.fillStyle=THEME.ink; ctx.lineWidth=1.3;
+  ctx.beginPath(); ctx.arc(s[0],s[1],2.5,0,7); ctx.fill();
+  ctx.beginPath(); ctx.arc(s[0],s[1],6.5,0,7); ctx.stroke();
+  const txt='('+clickPt[0]+', '+clickPt[1]+')';
+  ctx.font='bold 12px Arial'; ctx.textBaseline='alphabetic';
+  const w=ctx.measureText(txt).width;
+  let lx=s[0]+10, ly=s[1]-10;
+  if(lx+w+4>W()) lx=s[0]-10-w;
+  if(ly-12<4)    ly=s[1]+20;
+  ctx.fillStyle=THEME.bg; ctx.fillRect(lx-3, ly-13, w+6, 17);
+  ctx.strokeStyle=THEME.ink; ctx.lineWidth=0.8; ctx.strokeRect(lx-3, ly-13, w+6, 17);
+  ctx.fillStyle=THEME.ink; ctx.fillText(txt, lx, ly);
+}
+function draw(){
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.clearRect(0,0,W(),H());
+  const lo=nLo(), hi=nHi(), s=sVal();
+  THEME = colors();
+  const colorOn=opt('cColor');
+  const posCol = colorOn ? '#d01010' : THEME.mono;
+  const negCol = colorOn ? '#0a3cdc' : THEME.mono;
+  const setC=(id,prop,val)=>{ const e=document.getElementById(id); if(e) e.style[prop]=val; };
+  setC('lnPos','borderTopColor',posCol); setC('lnNeg','borderTopColor',negCol);
+  setC('ptPos','background',posCol);     setC('ptNeg','background',negCol);
+  setC('sqPos','color',posCol);          setC('sqNeg','color',negCol);
+  setC('hypPos','borderTopColor',posCol);setC('hypNeg','borderTopColor',negCol);
+  if(opt('cGrid')) drawGrid();
+  if(opt('cDragon')) drawDragon();
+  if(opt('cHypo')){
+    if(opt('cPos')) drawHypotenuse(P, [[1,0],[0,1]],   lo, hi, posCol);
+    if(opt('cNeg')) drawHypotenuse(N, [[-1,0],[0,-1]], lo, hi, negCol);
+  }
+  if(opt('cSquares')){
+    if(opt('cPos')) drawSquares(P, BASE_POS, lo, hi, posCol);
+    if(opt('cNeg')) drawSquares(N, BASE_NEG, lo, hi, negCol);
+  }
+  if(opt('cPath')){
+    if(opt('cPos')) drawPath(P,true, lo, hi, posCol);
+    if(opt('cNeg')) drawPath(N,true, lo, hi, negCol);
+  }
+  placedLabels=[]; placedPoints=[];
+  if(opt('cPos')) drawPointsLabels(P,'P', lo, hi, posCol);
+  if(opt('cNeg')) drawPointsLabels(N,'N', lo, hi, negCol);
+  if(opt('cMid')) drawM();
+  drawClick();
+  updateReadout();
+}
+function updateReadout(){
+  const s=sVal();
+  document.getElementById('readout').textContent =
+    'iterations '+nLo()+' to '+nHi()+'   (n = '+(s>=0?'+':'')+s+')   scale '+view.scale.toFixed(2)+' px/unit';
+}
+// ---------- interaction ----------
+let drag=null, dragMoved=false;
+cv.addEventListener('mousedown',e=>{ drag={x:e.clientX,y:e.clientY,ox:view.ox,oy:view.oy}; dragMoved=false; cv.classList.add('dragging'); });
+window.addEventListener('mousemove',e=>{
+  if(!drag) return;
+  if(Math.abs(e.clientX-drag.x)+Math.abs(e.clientY-drag.y)>3) dragMoved=true;
+  view.ox=drag.ox+(e.clientX-drag.x);
+  view.oy=drag.oy+(e.clientY-drag.y);
+  draw();
+});
+window.addEventListener('mouseup',e=>{
+  if(drag && !dragMoved){
+    const r=cv.getBoundingClientRect();
+    const mx=e.clientX-r.left, my=e.clientY-r.top;
+    if(mx>=0 && my>=0 && mx<=r.width && my<=r.height){
+      const gx=Math.round((mx-view.ox)/view.scale);
+      const gy=Math.round((view.oy-my)/view.scale);
+      clickPt=(clickPt && clickPt[0]===gx && clickPt[1]===gy) ? null : [gx,gy];
+      draw();
+    }
+  }
+  drag=null; cv.classList.remove('dragging');
+});
+cv.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const r=cv.getBoundingClientRect();
+  const mx=e.clientX-r.left, my=e.clientY-r.top;
+  const wx=(mx-view.ox)/view.scale, wy=(view.oy-my)/view.scale;
+  const f=Math.exp(-e.deltaY*0.0015);
+  view.scale*=f;
+  view.ox=mx-wx*view.scale;
+  view.oy=my+wy*view.scale;
+  draw();
+},{passive:false});
+let touch=null;
+cv.addEventListener('touchstart',e=>{
+  if(e.touches.length===1){const t=e.touches[0];touch={mode:'pan',x:t.clientX,y:t.clientY,ox:view.ox,oy:view.oy};}
+  else if(e.touches.length===2){
+    const [a,b]=e.touches; touch={mode:'pinch',d:Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY),scale:view.scale,
+      cx:(a.clientX+b.clientX)/2,cy:(a.clientY+b.clientY)/2,ox:view.ox,oy:view.oy};
+  }
+},{passive:false});
+cv.addEventListener('touchmove',e=>{
+  e.preventDefault();
+  if(!touch) return;
+  if(touch.mode==='pan'&&e.touches.length===1){
+    const t=e.touches[0]; view.ox=touch.ox+(t.clientX-touch.x); view.oy=touch.oy+(t.clientY-touch.y); draw();
+  } else if(touch.mode==='pinch'&&e.touches.length===2){
+    const [a,b]=e.touches; const d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
+    const r=cv.getBoundingClientRect(); const mx=touch.cx-r.left,my=touch.cy-r.top;
+    const wx=(mx-touch.ox)/touch.scale, wy=(touch.oy-my)/touch.scale;
+    view.scale=touch.scale*(d/touch.d);
+    view.ox=mx-wx*view.scale; view.oy=my+wy*view.scale; draw();
+  }
+},{passive:false});
+cv.addEventListener('touchend',()=>{touch=null;});
+// ---------- wire up ----------
+document.querySelectorAll('.toggle').forEach(b=>b.addEventListener('click',()=>{
+  const on=b.classList.toggle('on');
+  b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  draw();
+}));
+function setN(v){
+  v=Math.max(-33, Math.min(33, Math.round(v)));
+  ui.nRange.value=v;
+  document.getElementById('nVal').textContent=(v>=0?'+':'')+v;
+  fit();
+}
+ui.nRange.addEventListener('input',()=>setN(+ui.nRange.value));
+document.getElementById('nDec').addEventListener('click',()=>setN(+ui.nRange.value-1));
+document.getElementById('nInc').addEventListener('click',()=>setN(+ui.nRange.value+1));
+window.addEventListener('keydown',e=>{
+  if(e.key==='ArrowLeft'){ setN(+ui.nRange.value-1); e.preventDefault(); }
+  else if(e.key==='ArrowRight'){ setN(+ui.nRange.value+1); e.preventDefault(); }
+});
+document.getElementById('btnPng').addEventListener('click',savePng);
+document.getElementById('btnForward').addEventListener('click',()=>setN(33));
+document.getElementById('btnM').addEventListener('click',zoomToM);
+document.getElementById('btnDragon').addEventListener('click',zoomToDragon);
+window.addEventListener('resize',resize);
+// collapse / expand the side panel
+const appEl = document.getElementById('app');
+const panelToggle = document.getElementById('panelToggle');
+panelToggle.addEventListener('click',()=>{
+  const collapsed = appEl.classList.toggle('panel-collapsed');
+  // arrow direction flips via CSS rotation on #app.panel-collapsed
+  panelToggle.title = collapsed ? 'Show panel' : 'Hide panel';
+  panelToggle.setAttribute('aria-label', panelToggle.title);
+  resize();
+});
+// collapse / expand the legend
+const keyToggle = document.getElementById('keyToggle');
+const gKey = document.getElementById('gKey');
+if(keyToggle && gKey){
+  keyToggle.addEventListener('click', ()=>{
+    const collapsed = gKey.classList.toggle('collapsed');
+    keyToggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+  });
+}
+// light / dark theme (floating circle button, top-right of the graph)
+const btnTheme = document.getElementById('btnTheme');
+const MOON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const SUN = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>';
+btnTheme.innerHTML = MOON;
+btnTheme.addEventListener('click',()=>{
+  dark=!dark;
+  document.body.classList.toggle('dark', dark);
+  btnTheme.innerHTML = dark ? SUN : MOON;
+  btnTheme.title = dark ? 'Light mode' : 'Dark mode';
+  btnTheme.setAttribute('aria-label', btnTheme.title);
+  draw();
+});
+// init
+resize();
+fit();
+renderDragonIcon();
+</script>
+</body>
+</html>  /* pill action buttons */
   .pill { font-family: Arial; font-size: 12px; border: 1px solid #000; background: #fff; color: #000; border-radius: 999px; padding: 8px 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 7px; transition: background .15s, color .15s, border-color .15s; }
   .pill:hover { background: #000; color: #fff; }
   .pill svg { display: block; }
