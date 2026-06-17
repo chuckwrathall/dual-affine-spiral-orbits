@@ -191,6 +191,96 @@
             <div class="equation" style="text-align: left;">
                 \( a(n) = \dfrac{|P_n|^2 + |N_n|^2}{5} = 2^{n+1} + 1 - 2 \operatorname{Re}((1 + i)^n) \)
             </div>
+            <style>
+.anx-explorer{margin-top:1.5rem;font-size:13px;line-height:1.7;color:#1c1917}
+.anx-explorer .anx-enter{display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin-bottom:.6rem}
+.anx-explorer .anx-enter label{color:#666}
+.anx-explorer .anx-enter input{width:5rem;font:inherit;font-size:13px;padding:3px 6px;border:1px solid #ccc;border-radius:5px;text-align:center;background:#fff}
+.anx-explorer .anx-note{font-size:12px;color:#9a6b00;margin:0 0 .6rem;min-height:1em}
+.anx-explorer table{border-collapse:collapse;font-variant-numeric:tabular-nums}
+.anx-explorer td{border:1px solid #e2e2e2;background:#fff;padding:5px 11px}
+.anx-explorer td.anx-l{color:#666}
+.anx-explorer td.anx-vp{color:#d01010}
+.anx-explorer td.anx-vn{color:#0a3cdc}
+.anx-explorer td.anx-va{font-weight:500}
+</style>
+<div class="anx-explorer" aria-label="Interactive read-off of a(n) and the orbit quantities">
+  <div class="anx-enter">
+    <label for="anx-n-input">Enter value for n</label>
+    <input id="anx-n-input" type="number" step="1">
+  </div>
+  <p class="anx-note" id="anx-note"></p>
+  <table>
+    <tbody>
+      <tr><td class="anx-l">(1+i)<sup>n</sup></td><td id="anx-W"></td></tr>
+      <tr><td class="anx-l">P<sub>n</sub></td><td class="anx-vp" id="anx-P"></td></tr>
+      <tr><td class="anx-l">N<sub>n</sub></td><td class="anx-vn" id="anx-N"></td></tr>
+      <tr><td class="anx-l">a(n)</td><td class="anx-va" id="anx-A"></td></tr>
+      <tr><td class="anx-l">side length 2<sup>n/2</sup></td><td id="anx-side"></td></tr>
+      <tr><td class="anx-l">area 2<sup>n</sup></td><td id="anx-area"></td></tr>
+      <tr><td class="anx-l">orientation 45n&deg;</td><td id="anx-ang"></td></tr>
+      <tr><td class="anx-l">distance d<sub>n</sub></td><td id="anx-dist"></td></tr>
+    </tbody>
+  </table>
+</div>
+<script>
+(function(){
+  function group(s){var p=(''+s).split('.');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,',');return p.join('.');}
+  function sci(exp,m){return m+'&times;10<sup>'+exp+'</sup>';}
+  function sciDigits(s){var exp=s.length-1;var lead=s.slice(0,8);var m=Number(lead)/Math.pow(10,lead.length-1);m=Math.round(m*1e6)/1e6;if(m>=10){m/=10;exp++;}return sci(exp,m);}
+  function fmtBig(x){var neg=x<0n;var s=(neg?-x:x).toString();var out=s.length<=15?group(s):sciDigits(s);return (neg?'-':'')+out;}
+  function fmtRat(num,den){var neg=num<0n;var a=neg?-num:num;var D=6;var scale=10n**BigInt(D);var q=a*scale/den,r=(a*scale)%den;if(2n*r>=den)q+=1n;var s=q.toString();while(s.length<=D)s='0'+s;var ip=s.slice(0,s.length-D),fp=s.slice(s.length-D).replace(/0+$/,'');return (neg?'-':'')+group(ip+(fp?'.'+fp:''));}
+  function fmtFloat(x){if(x===0)return '0';var ax=Math.abs(x);if(ax>=1e-4&&ax<1e15){return group(x.toFixed(6).replace(/0+$/,'').replace(/\.$/,''));}var exp=Math.floor(Math.log10(ax));var m=x/Math.pow(10,exp);m=Math.round(m*1e6)/1e6;if(Math.abs(m)>=10){m/=10;exp++;}return sci(exp,m);}
+  function sciLog(L){if(L<15){var v=Math.pow(10,L);return group(v<1000?v.toFixed(3).replace(/\.?0+$/,''):v.toFixed(0));}var exp=Math.floor(L);var m=Math.pow(10,L-exp);m=Math.round(m*1e6)/1e6;if(m>=10){m/=10;exp++;}return sci(exp,m);}
+  function cmulB(a,b){return [a[0]*b[0]-a[1]*b[1], a[0]*b[1]+a[1]*b[0]];}
+  function cpow(base,m){var r=[1n,0n],b=base,e=m;while(e>0){if(e&1)r=cmulB(r,b);b=cmulB(b,b);e=Math.floor(e/2);}return r;}
+  var CAP=50000;
+  var ids=['anx-W','anx-P','anx-N','anx-A','anx-side','anx-area','anx-ang','anx-dist'];
+  function setH(id,h){var e=document.getElementById(id);if(e)e.innerHTML=h;}
+  function clearAll(){for(var i=0;i<ids.length;i++)setH(ids[i],'');}
+  var input=document.getElementById('anx-n-input'),note=document.getElementById('anx-note');
+  function showNote(m){if(note)note.textContent=m||'';}
+  function update(){
+    var raw=(input.value||'').trim();
+    if(raw===''){clearAll();showNote('');return;}
+    if(!/^-?\d+$/.test(raw)){clearAll();showNote('Enter a whole number (negatives allowed).');return;}
+    var n=parseInt(raw,10);
+    if(Math.abs(n)>CAP){clearAll();showNote('Works for |n| up to '+group(''+CAP)+' here.');return;}
+    var neg=n<0, m=Math.abs(n);
+    var g=cpow(neg?[1n,-1n]:[1n,1n], m), gRe=g[0], gIm=g[1];
+    var den=neg?(1n<<BigInt(m)):1n;
+    var Nx=-gRe-2n*gIm, Ny=2n*gRe-gIm, Px=-den-Nx, Py=2n*den-Ny;
+    if(neg){
+      setH('anx-W', fmtRat(gRe,den)+' '+(gIm<0n?'-':'+')+' '+fmtRat(gIm<0n?-gIm:gIm,den)+' i');
+      setH('anx-P', '('+fmtRat(Px,den)+', '+fmtRat(Py,den)+')');
+      setH('anx-N', '('+fmtRat(Nx,den)+', '+fmtRat(Ny,den)+')');
+      var aNum=den+2n-2n*gRe;
+      setH('anx-A', fmtRat(aNum,den));
+      setH('anx-side', fmtFloat(Math.pow(2,n/2)));
+      setH('anx-area', fmtFloat(Math.pow(2,n)));
+      var aF=Number((aNum*1000000n)/den)/1e6;
+      setH('anx-dist', group(Math.sqrt(2.5*(aF-0.5)).toFixed(3)));
+    }else{
+      setH('anx-W', fmtBig(gRe)+' '+(gIm<0n?'-':'+')+' '+fmtBig(gIm<0n?-gIm:gIm)+' i');
+      setH('anx-P', '('+fmtBig(Px)+', '+fmtBig(Py)+')');
+      setH('anx-N', '('+fmtBig(Nx)+', '+fmtBig(Ny)+')');
+      var aN=(1n<<BigInt(m+1))+1n-2n*gRe;
+      setH('anx-A', fmtBig(aN));
+      setH('anx-side', m%2===0 ? fmtBig(1n<<BigInt(m/2)) : sciLog((m/2)*Math.log10(2)));
+      setH('anx-area', fmtBig(1n<<BigInt(m)));
+      var sA=aN.toString();
+      var La=(sA.length-Math.min(15,sA.length))+Math.log10(Number(sA.slice(0,15)));
+      var Ld=0.5*(Math.log10(2.5)+La);
+      setH('anx-dist', Ld<15 ? group(Math.sqrt(2.5*(Number(aN)-0.5)).toFixed(3)) : sciLog(Ld));
+    }
+    var ang=45*n, red=((ang%360)+360)%360;
+    setH('anx-ang', group(''+ang)+'&deg;'+(red!==ang?' (&equiv; '+red+'&deg;)':''));
+    showNote(neg ? 'Backward orbit (n < 0): non-lattice points spiralling toward the Twindragon.' : '');
+  }
+  input.addEventListener('input', update);
+  update();
+})();
+</script>
         </div>
         <!-- FIGURE -->
         <figure style="margin:2rem 0; text-align:center;">
